@@ -103,11 +103,12 @@ jobs:
         sudo chown $USER:$GROUPS /workdir
 
     - name: Clone source code
-      working-directory: /workdir
+      working-directory: /home/runner/work/RAX3000M-OpenWRT/RAX3000M-OpenWRT
       run: |
         df -hT $PWD
         git clone $REPO_URL -b $REPO_BRANCH openwrt
-        ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
+        ln -sf /home/runner/work/RAX3000M-OpenWRT/RAX3000M-OpenWRT $GITHUB_WORKSPACE/openwrt
+        pwd
 
     - name: Load custom feeds
       run: |
