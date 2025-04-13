@@ -81,7 +81,7 @@ jobs:
       run: cd openwrt && ./scripts/feeds update -a
 
     - name: Install feeds
-      run: cd openwrt && ./scripts/feeds install -a && ./scripts/feeds install -a -f -p modem
+      run: cd openwrt && ./scripts/feeds install -a 
 
     - name: Load custom configuration
       run: |
@@ -113,6 +113,7 @@ jobs:
         cd openwrt
         ./scripts/feeds update -a
         ./scripts/feeds install -a
+        ./scripts/feeds install -a -f -p modem
         go version
         echo -e "$(nproc) thread compile"
         make -j$(nproc) || make -j1 || make -j1 V=s
