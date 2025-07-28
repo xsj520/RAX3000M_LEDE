@@ -13,17 +13,11 @@
 # Modify default IP
 #sed -i 's/192.168.1.1/192.168.50.5/g' package/base-files/files/bin/config_generate
 
-git clone --depth=1 -b main https://github.com/fw876/helloworld package/luci-app-ssr-plus
-git_sparse_clone main https://github.com/linkease/istore-ui app-store-ui
-# 修改本地时间格式
-sed -i 's/os.date()/os.date("%a %Y-%m-%d %H:%M:%S")/g' package/lean/autocore/files/*/index.htm
-
 # 修改版本为编译日期
 date_version=$(date +"%y.%m.%d")
 orig_version=$(cat "package/lean/default-settings/files/zzz-default-settings" | grep DISTRIB_REVISION= | awk -F "'" '{print $2}')
 sed -i "s/${orig_version}/R${date_version} by xsj/g" package/lean/default-settings/files/zzz-default-settings
 # 修改插件名字
-sed -i 's/"带宽监控"/"监控"/g' `grep "带宽监控" -rl ./`
 sed -i 's/"网络存储"/"存储"/g' `grep "网络存储" -rl ./`
 sed -i 's/"iStore"/"商店"/g' `grep "iStore" -rl ./`
 sed -i 's/"Docker"/"容器"/g' `grep "Docker" -rl ./`
