@@ -21,7 +21,7 @@ sed -i "s/${orig_version}/R${date_version} by xsj/g" package/lean/default-settin
 sed -i 's/"网络存储"/"存储"/g' `grep "网络存储" -rl ./`
 sed -i 's/"iStore"/"商店"/g' `grep "iStore" -rl ./`
 sed -i 's/"Docker"/"容器"/g' `grep "Docker" -rl ./`
-
+sed -i 's/"存储卷"/"存储"/g' `grep "存储卷" -rl ./`
 sed -i 's/"Turbo ACC 网络加速"/"网络加速"/g' `grep "Turbo ACC 网络加速" -rl ./`
 
 sed -i 's/"上网时间控制"/"上网控制"/g' `grep "上网时间控制" -rl ./`
@@ -37,7 +37,7 @@ sed -i 's/"无线"/"无线设置"/g' `grep "无线" -rl ./`
 
 sed -i 's/"管理权"/"管理设置"/g' `grep "管理权" -rl ./`
 sed -i 's/"软件包"/"软件包名"/g' `grep "软件包" -rl ./`
-sed -i 's/"UPnP"/"U P N P"/g' `grep "UPnP" -rl ./`
+sed -i 's/"UPnP IGD 和 PCP"/"U P N P"/g' `grep "UPnP IGD 和 PCP" -rl ./`
 sed -i 's/"动态 DNS"/"动态DNS"/g' `grep "动态 DNS" -rl ./`
 sed -i 's/"路由表"/"路由器表"/g' `grep "路由表" -rl ./`
 sed -i 's/"路由"/"路由设置"/g' `grep "路由" -rl ./`
