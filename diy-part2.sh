@@ -28,8 +28,8 @@ sed -i 's/"上网时间控制"/"上网控制"/g' `grep "上网时间控制" -rl 
 sed -i 's/"启动项"/"启动项目"/g' `grep "启动项" -rl ./`
 sed -i 's/"挂载点"/"挂载地点"/g' `grep "挂载点" -rl ./`
 sed -i 's/"重启"/"重启开关"/g' `grep "重启" -rl ./`
-# sed -i 's/"ShadowSocksR Plus+"/"科学上网"/g' `grep "ShadowSocksR Plus+" -rl ./`
-sed -i 's/"PassWall 2"/"科学上网"/g' `grep "PassWall 2" -rl ./`
+sed -i 's/"ShadowSocksR Plus+"/"科学上网"/g' `grep "ShadowSocksR Plus+" -rl ./`
+# sed -i 's/"PassWall 2"/"科学上网"/g' `grep "PassWall 2" -rl ./`
 sed -i 's/"防火墙"/"防火墙区"/g' `grep "防火墙" -rl ./`
 sed -i 's/"主机名"/"主机名称"/g' `grep "主机名" -rl ./`
 sed -i 's/"接口"/"接口设置"/g' `grep "接口" -rl ./`
