@@ -17,6 +17,8 @@ sed -i 's/192.168.1.1/192.168.1.2/g' package/base-files/files/bin/config_generat
 date_version=$(date +"%y.%m.%d")
 orig_version=$(cat "package/lean/default-settings/files/zzz-default-settings" | grep DISTRIB_REVISION= | awk -F "'" '{print $2}')
 sed -i "s/${orig_version}/R${date_version} by xsj/g" package/lean/default-settings/files/zzz-default-settings
+
+git_sparse_clone main https://github.com/Lienol/openwrt-package luci-app-filebrowser
 # 修改插件名字
 sed -i 's/"网络存储"/"存储"/g' `grep "网络存储" -rl ./`
 sed -i 's/"iStore"/"商店"/g' `grep "iStore" -rl ./`
