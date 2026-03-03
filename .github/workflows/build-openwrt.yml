@@ -38,9 +38,12 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@main
-
+    - name: Set up Python 2.7
+      uses: actions/setup-python@v4
+      with: 
+        python-version:'2.7'
+        architecture: 'x64'
+      
     - name: Initialization environment
       env:
         DEBIAN_FRONTEND: noninteractive
