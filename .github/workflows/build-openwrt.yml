@@ -1,4 +1,3 @@
-
 #
 # Copyright (c) 2019-2020 P3TERX <https://p3terx.com>
 #
@@ -21,7 +20,7 @@ on:
         default: 'false'
 
 env:
-  REPO_URL: https://github.com/xsj520/lede
+  REPO_URL: https://github.com/coolsnowwolf/lede
   REPO_BRANCH: master
   FEEDS_CONF: feeds.conf.default
   CONFIG_FILE: .config
