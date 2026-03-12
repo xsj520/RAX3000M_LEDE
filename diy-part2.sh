@@ -23,7 +23,6 @@ sed -i "s/${orig_version}/R${date_version} by xsj/g" package/lean/default-settin
 sed -i 's/"网络存储"/"存储"/g' `grep "网络存储" -rl ./`
 sed -i 's/"iStore"/"商店"/g' `grep "iStore" -rl ./`
 sed -i 's/"Docker"/"容器"/g' `grep "Docker" -rl ./`
-sed -i 's/"存储卷"/"存储"/g' `grep "存储卷" -rl ./`
 sed -i 's/"Turbo ACC 网络加速"/"网络加速"/g' `grep "Turbo ACC 网络加速" -rl ./`
 
 sed -i 's/"上网时间控制"/"上网控制"/g' `grep "上网时间控制" -rl ./`
