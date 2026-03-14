@@ -20,8 +20,8 @@ on:
         default: 'false'
 
 env:
-  REPO_URL: https://github.com/xsj520/op
-  REPO_BRANCH: main
+  REPO_URL: https://github.com/coolsnowwolf/lede
+  REPO_BRANCH: master
   FEEDS_CONF: feeds.conf.default
   CONFIG_FILE: .config
   DIY_P1_SH: diy-part1.sh
@@ -40,8 +40,7 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@main
-    - name: Grant execute permission
-      run: sudo chmod -R +x openwrt
+
     - name: Initialization environment
       env:
         DEBIAN_FRONTEND: noninteractive
@@ -88,7 +87,7 @@ jobs:
         $GITHUB_WORKSPACE/$DIY_P1_SH
 
     - name: Update feeds
-      run: cd openwrt && chmod +x ./scripts/feeds && ./scripts/feeds update -a
+      run: cd openwrt && ./scripts/feeds update -a
 
     - name: Install feeds
       run: cd openwrt && ./scripts/feeds install -a 
