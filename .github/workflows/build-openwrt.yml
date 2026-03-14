@@ -40,7 +40,7 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@main
-      - name: Grant execute permission
+    - name: Grant execute permission
       run: sudo chmod -R +x openwrt
     - name: Initialization environment
       env:
