@@ -21,7 +21,7 @@ on:
 
 env:
   REPO_URL: https://github.com/coolsnowwolf/lede/tree/12eec53e67a7ed89cd884fb961cf813de3ecedd3
-  REPO_BRANCH: 12eec53
+  REPO_BRANCH: tree
   FEEDS_CONF: feeds.conf.default
   CONFIG_FILE: .config
   DIY_P1_SH: diy-part1.sh
