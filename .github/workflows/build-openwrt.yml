@@ -63,14 +63,6 @@ jobs:
         sudo mkdir -p /mnt/workdir
         sudo chown $USER:$GROUPS /mnt/workdir
         go version
-        echo "========== CPU信息 =========="
-        lscpu | grep -E "Model name|Core|CPU\(s\)"
-        echo -e "\n========== 内存信息 =========="
-        free -h
-        echo -e "\n========== 磁盘信息 =========="
-        df -h
-        echo -e "\n========== 系统版本 =========="
-        cat /etc/os-release | grep PRETTY_NAME
 
     - name: Clone source code
       working-directory: /mnt/workdir
