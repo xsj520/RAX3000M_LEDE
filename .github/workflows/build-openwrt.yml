@@ -123,11 +123,6 @@ jobs:
         ./scripts/feeds update -a
         ./scripts/feeds install -a
         go version
-          sudo apt-get update
-          sudo apt-get install -y python2 python2-dev libpython2.7-dev
-          sudo update-alternatives --install /usr/bin/python python /usr/bin/python2 100
-          sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 50
-          python --version
         echo -e "$(nproc) thread compile"
         make -j$(nproc) || make -j1 || make -j1 V=s
         echo "::set-output name=status::success"
