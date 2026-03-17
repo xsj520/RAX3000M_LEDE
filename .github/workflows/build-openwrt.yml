@@ -41,11 +41,19 @@ jobs:
     - name: Checkout
       uses: actions/checkout@main
 
+    # --- 【修改1】提前安装 Python 2.7，确保后续步骤都用 Python 2 ---
+    - name: Install Python 2.7 (required for this build)
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y python2 python2-dev python2-setuptools
+        sudo update-alternatives --install /usr/bin/python python /usr/bin/python2 100
+        sudo update-alternatives --set python /usr/bin/python2
+        python --version
+
     - name: Initialization environment
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
-        #sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
         sudo add-apt-repository ppa:longsleep/golang-backports -y
         sudo -E apt-get -qq update
         sudo -E apt install -y ack antlr3 asciidoc autoconf automake autopoint binutils bison build-essential \
@@ -113,23 +121,14 @@ jobs:
         cd openwrt
         make defconfig
         make download -j8
-        find dl -size -1024c -exec ls -l {} \;
-        find dl -size -1024c -exec rm -f {} \;
-        
-    - name: Install Python 2.7 for Node.js v12 compatibility
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y python2
-        sudo update-alternatives --install /usr/bin/python python /usr/bin/python2 100
-        sudo update-alternatives --set python /usr/bin/python2
-        python --version
-    
+        # --- 【修改2】只删除0字节空文件，避免误删小体积包 ---
+        find dl -size 0c -exec rm -f {} \;
+
     - name: Compile the firmware
       id: compile
       run: |
         cd openwrt
-        ./scripts/feeds update -a
-        ./scripts/feeds install -a
+        # --- 【修改3】删除重复的 feeds update/install ---
         go version
         echo -e "$(nproc) thread compile"
         make -j$(nproc) || make -j1 || make -j1 V=s
