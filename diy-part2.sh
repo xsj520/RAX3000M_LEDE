@@ -23,7 +23,7 @@ if [ -f "$file_path" ]; then
     sed -i "s/${orig_version}/R${date_version} by xsj/g" "$file_path"
     
     # 2. 修改 git 版本号（把下面的字符串换成你想要的）
-    new_git="git-26.0318.xxxx-xxxxxx"
+    new_git="git-26.0318.0706-2018"
     sed -i "s/git-[0-9a-z.-]*/${new_git}/g" "$file_path"
     
     echo "✅ 版本号已更新为: R${date_version} by xsj / LuCI openwrt-23.05 branch ${new_git}"
