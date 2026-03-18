@@ -13,6 +13,24 @@
 # Modify default IP
 sed -i 's/192.168.1.1/192.168.1.2/g' package/base-files/files/bin/config_generate
 
+#!/bin/bash
+date_version=$(date +"%y.%m.%d")
+file_path="package/lean/default-settings/files/zzz-default-settings"
+
+if [ -f "$file_path" ]; then
+    # 1. 修改日期版本号
+    orig_version=$(grep "DISTRIB_REVISION=" "$file_path" | awk -F "'" '{print $2}')
+    sed -i "s/${orig_version}/R${date_version} by xsj/g" "$file_path"
+    
+    # 2. 修改 git 版本号（把下面的字符串换成你想要的）
+    new_git="git-26.0318.xxxx-xxxxxx"
+    sed -i "s/git-[0-9a-z.-]*/${new_git}/g" "$file_path"
+    
+    echo "✅ 版本号已更新为: R${date_version} by xsj / LuCI openwrt-23.05 branch ${new_git}"
+else
+    echo "❌ 错误：找不到文件 $file_path"
+fi
+
 # 修改版本为编译日期
 date_version=$(date +"%y.%m.%d")
 # orig_version=$(cat "package/lean/default-settings/files/zzz-default-settings" | grep DISTRIB_REVISION= | awk -F "'" '{print $2}')
