@@ -13,7 +13,6 @@
 # Modify default IP
 sed -i 's/192.168.1.1/192.168.1.2/g' package/base-files/files/bin/config_generate
 
-#!/bin/bash
 date_version=$(date +"%y.%m.%d")
 file_path="package/lean/default-settings/files/zzz-default-settings"
 
