@@ -64,3 +64,4 @@ sed -i 's/"FileBrowser"/"文件管理"/g' `grep "FileBrowser" -rl ./`
 sed -i 's/"终端"/"终端命令"/g' `grep "终端" -rl ./`
 sed -i 's/"QoS"/"网络控制"/g' `grep "QoS" -rl ./`
 sed -i 's/"Watchcat"/"断网重启"/g' `grep "Watchcat" -rl ./`
+sed -i 's/"Control"/"限速"/g' `grep "Control" -rl ./`
