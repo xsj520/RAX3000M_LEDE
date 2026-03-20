@@ -20,15 +20,6 @@
 echo >> feeds.conf.default
 echo 'src-git modem https://github.com/FUjr/modem_feeds.git;main' >> feeds.conf.default
 echo 'src-git mt5700webui https://github.com/aliass532/mt5700webui-openwrt-server.git;main' >> feeds.conf.default
-# 添加 eqosplus 插件仓库到 feeds
-echo "src-git eqosplus https://github.com/sirpdboy/luci-app-eqosplus" >> feeds.conf.default
-
-# 更新并安装 eqosplus 插件
-./scripts/feeds update eqosplus
-./scripts/feeds install -a -p eqosplus
-
-# 在 menuconfig 中自动勾选 eqosplus（可选，让编译时自动包含）
-echo "CONFIG_PACKAGE_luci-app-eqosplus=y" >> .config
 
 # Add a feed source
 # echo 'src-git helloworld https://github.com/fw876/helloworld' >>feeds.conf.default
