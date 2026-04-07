@@ -24,7 +24,4 @@ echo 'src-git mt5700webui https://github.com/aliass532/mt5700webui-openwrt-serve
 # Add a feed source
 #echo 'src-git helloworld https://github.com/fw876/helloworld' >>feeds.conf.default
 #echo 'src-git passwall https://github.com/xiaorouji/openwrt-passwall' >>feeds.conf.default
-echo 'src-git istore https://github.com/linkease/istore;main' >> feeds.conf.default
 
-# 修复 Rust CI 编译报错
-sed -i 's/llvm.download-ci-llvm=true/llvm.download-ci-llvm=-if-unchanged/' feeds/packages/lang/rust/Makefile
