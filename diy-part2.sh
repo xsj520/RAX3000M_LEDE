@@ -9,6 +9,12 @@
 # File name: diy-part2.sh
 # Description: OpenWrt DIY script part 2 (After Update feeds)
 #
+# 禁用 Rust 工具链
+echo "CONFIG_PACKAGE_rust=n" >> .config
+echo "CONFIG_PACKAGE_rust-std=n" >> .config
+# 禁用依赖 Rust 的 mosdns（如果不需要）
+echo "CONFIG_PACKAGE_mosdns=n" >> .config
+echo "CONFIG_PACKAGE_luci-app-mosdns=n" >> .config
 
 # Modify default IP
 sed -i 's/192.168.1.1/192.168.1.2/g' package/base-files/files/bin/config_generate
