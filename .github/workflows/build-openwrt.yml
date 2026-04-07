@@ -100,11 +100,6 @@ jobs:
     - name: Install feeds
       run: cd openwrt && ./scripts/feeds install -a
       
-    - name: 修复 Rust 1.90+ CI 配置
-      run: |
-        cd feeds/packages/lang/rust
-        sed -i 's/download-ci-llvm = true/download-ci-llvm = "if-unchanged"/g' src/bootstrap/src/core/config/config.rs
-        sed -i 's/download-ci-llvm=true/download-ci-llvm="if-unchanged"/g' Makefile
 
     - name: Load custom configuration
       run: |
