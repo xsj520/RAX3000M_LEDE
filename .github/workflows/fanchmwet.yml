@@ -91,6 +91,11 @@ jobs:
 
     - name: Install feeds
       run: cd openwrt && ./scripts/feeds install -a 
+   
+    - name: Fix Rust llvm error
+  run: |
+    sed -i 's/llvm-download-ci-llvm=true/llvm-download-ci-llvm=unchanged/' feeds/packages/lang/rust/Makefile
+
 
     - name: Load custom configuration
       run: |
