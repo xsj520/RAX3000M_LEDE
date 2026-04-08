@@ -8,28 +8,6 @@
 # https://github.com/P3TERX/Actions-OpenWrt
 # File name: diy-part2.sh
 # Description: OpenWrt DIY script part 2 (After Update feeds)
-#
-==============================================
- # 1. 强制删除所有 Rust 相关配置（覆盖原有=y的配置）
- sed -i '/CONFIG_PACKAGE_rust/d' .config
- sed -i '/CONFIG_PACKAGE_rust-std/d' .config
- sed -i '/CONFIG_PACKAGE_cargo/d' .config
- sed -i '/CONFIG_PACKAGE_rustc/d' .config
- sed -i '/CONFIG_PACKAGE_librustc/d' .config
- sed -i '/CONFIG_PACKAGE_librust-std/d' .config
- # 2. 禁用依赖 Rust 的软件包（按需保留/删除）
- sed -i '/CONFIG_PACKAGE_modns/d' .config
- sed -i '/CONFIG_PACKAGE_luci-app-modns/d' .config
- sed -i '/CONFIG_PACKAGE_tailscale/d' .config
- sed -i '/CONFIG_PACKAGE_luci-app-tailscale/d' .config
- # 3. 写入禁用配置（确保彻底关闭）
- echo "CONFIG_PACKAGE_rust=n" >> .config
- echo "CONFIG_PACKAGE_rust-std=n" >> .config
- echo "CONFIG_PACKAGE_cargo=n" >> .config
- echo "CONFIG_PACKAGE_rustc=n" >> .config
- # 4. 刷新配置，确保生效（关键步骤！）
- make defconfig
- # ==============================================
 
 # Modify default IP
 sed -i 's/192.168.1.1/192.168.1.2/g' package/base-files/files/bin/config_generate
