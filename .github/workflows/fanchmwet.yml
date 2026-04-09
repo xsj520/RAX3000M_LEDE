@@ -20,8 +20,8 @@ on:
         default: 'false'
 
 env:
-  REPO_URL: https://github.com/fanchmwrt/fanchmwrt
-  REPO_BRANCH: fanchmwrt-25.12.2
+  REPO_URL: https://github.com/xsj520/immortalwrt-mt798x-rebase
+  REPO_BRANCH: 25.12-dev
   FEEDS_CONF: feeds.conf.default
   CONFIG_FILE: .config
   DIY_P1_SH: diy-part1.sh
@@ -116,16 +116,6 @@ jobs:
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
     
-    - name: Build OpenWrt
-      run: |
-        cd openwrt
-        # 修改Rust配置，禁用从CI下载LLVM，改为本地构建
-        sed -i 's/--set=llvm.download-ci-llvm=true/--set=llvm.download-ci-llvm=false/' \
-        package/feeds/packages/rust/Makefile
-        # 清理Rust包可能存在的旧编译文件
-        make package/rust/host/clean V=s
-        # 开始编译固件
-        make -j$(nproc) V=s
 
     - name: Compile the firmware
       id: compile
