@@ -78,13 +78,6 @@ jobs:
         df -hT $PWD
         git clone $REPO_URL -b $REPO_BRANCH openwrt
         ln -sf /mnt/workdir/openwrt $GITHUB_WORKSPACE/openwrt
-    - name: 解压源码
-      working-directory: /mnt/workdir
-      run: |
-        # 先清理git克隆的旧目录，避免残留文件冲突（强烈建议加）
-        rm -rf openwrt
-        # 解压到正确的openwrt目录
-        unzip xx.zip -d openwrt/
 
     - name: Load custom feeds
       run: |
