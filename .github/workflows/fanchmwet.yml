@@ -1,141 +1,87 @@
-name: Build OpenWrt from ZIP source
+name: Build OpenWrt from xsj520/x xx.zip Source
 
 on:
-  workflow_dispatch:        # 手动触发
-  repository_dispatch:      # 也支持 API 触发
-
-env:
-  # 你的压缩包所在仓库信息
-  REPO_OWNER: xsj520
-  REPO_NAME: x
-  REPO_BRANCH: main
-  SOURCE_ZIP: xx.zip        # 压缩包文件名
-
-  # 自定义配置文件（如果你的仓库中有这些文件）
-  CONFIG_FILE: 3000m.config
-  DIY_P1_SH: diy-part1.sh
-  DIY_P2_SH: diy-part2.sh
-
-  TZ: Asia/Shanghai
+  workflow_dispatch:    # 手动触发编译
+  push:
+    branches: [ main ]  # 推送到main自动编译（可删除）
 
 jobs:
   build:
-    runs-on: ubuntu-24.04
-
+    runs-on: ubuntu-22.04
     steps:
-      - name: Checkout (for config files & scripts)
+      - name: Checkout current repo (xsj520/x)
         uses: actions/checkout@v4
+        with:
+          repository: xsj520/x  # 明确指定你的仓库，确保拉取正确
+          ref: main
 
+      # 安装OpenWrt编译依赖
       - name: Install build dependencies
-        env:
-          DEBIAN_FRONTEND: noninteractive
         run: |
           sudo apt update
-          sudo apt install -y build-essential libncurses5-dev gawk git libssl-dev gettext \
-            zlib1g-dev unzip wget file python3 python3-pip python3-ply python3-docutils \
-            rsync subversion ccache libtool autoconf automake bc xsltproc
+          sudo apt install -y ack antlr3 asciidoc autoconf automake autopoint binutils bison build-essential \
+          bzip2 ccache cmake cpio curl device-tree-compiler fastjar flex gawk gettext gcc-multilib g++-multilib \
+          git gperf haveged help2man intltool libc6-dev-i386 libelf-dev libfuse-dev libglib2.0-dev libgmp3-dev \
+          libltdl-dev libmpc-dev libmpfr-dev libncurses5-dev libncursesw5-dev libpython3-dev libreadline-dev \
+          libssl-dev libtool lrzsz mkisofs msmtp nano ninja-build p7zip p7zip-full patch pkgconf python3-pyelftools \
+          python3-pip qemu-utils rsync scons squashfs-tools subversion swig texinfo uglifyjs upx-ucl unzip \
+          vim wget xmlto xxd zlib1g-dev
 
-      - name: Download source zip file
+      # 🔴 核心步骤：直接解压你仓库里的 xx.zip 源码（绝对能拿到）
+      - name: Unzip xx.zip from xsj520/x repo
         run: |
-          mkdir -p /mnt/workdir
-          cd /mnt/workdir
-          # 从 GitHub raw 链接下载 zip
-          wget https://raw.githubusercontent.com/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}/${{ env.REPO_BRANCH }}/${{ env.SOURCE_ZIP }}
+          # 确认xx.zip存在，打印信息方便排查
           ls -la
-
-      - name: Extract source code
-        run: |
-          cd /mnt/workdir
-          unzip -q ${{ env.SOURCE_ZIP }}
-          # 查看解压后的内容
-          echo "解压后的目录结构："
-          ls -la
-          # 尝试找到真正的源码根目录（包含 Makefile 和 include 等）
-          # 如果压缩包内直接是源码文件（没有外层目录），则直接重命名为 openwrt
-          # 如果解压后得到一个子目录（例如 openwrt-src/），则将其重命名为 openwrt
-          if [ -f Makefile ] && [ -d include ] && [ -d scripts ]; then
-            # 当前目录已经是源码根目录
-            mv . ../openwrt_tmp
-            cd ..
-            rm -rf workdir
-            mv openwrt_tmp workdir
-          else
-            # 查找包含 Makefile 和 include 的目录
-            SRCDIR=$(find . -maxdepth 2 -type f -name Makefile -exec dirname {} \; | head -1)
-            if [ -n "$SRCDIR" ] && [ -d "$SRCDIR/include" ]; then
-              mv "$SRCDIR" openwrt
-            else
-              echo "错误：无法找到 OpenWrt 源码根目录（缺少 Makefile 或 include）"
-              exit 1
-            fi
+          unzip -q xx.zip -d openwrt
+          # 自动处理zip套一层文件夹的情况（99%的源码包都兼容）
+          if [ -d "openwrt/$(ls openwrt | head -n1)" ]; then
+            mv openwrt/$(ls openwrt | head -n1)/* openwrt/
+            rm -rf openwrt/$(ls openwrt | head -n1)
           fi
+
+      # 🟢 核心：把你的 30000m.config 设为编译配置
+      - name: Apply custom config (3000m.config -> .config)
+        run: |
+          cp 30000m.config openwrt/.config
+
+      # 🟡 执行DIY1.sh
+      - name: Run DIY1.sh
+        run: |
+          chmod +x DIY1.sh
+          cp DIY1.sh openwrt/
+          cd openwrt && ./DIY1.sh
+
+      # 🟡 执行DIY2.sh
+      - name: Run DIY2.sh
+        run: |
+          chmod +x DIY2.sh
+          cp DIY2.sh openwrt/
+          cd openwrt && ./DIY2.sh
+
+      # 更新feeds
+      - name: Update & install feeds
+        run: |
           cd openwrt
-          pwd && ls -la
-
-      - name: Link workspace
-        run: |
-          ln -sf /mnt/workdir/openwrt $GITHUB_WORKSPACE/openwrt
-
-      - name: Update feeds
-        working-directory: openwrt
-        run: |
           ./scripts/feeds update -a
           ./scripts/feeds install -a
 
-      - name: Copy custom config file
-        working-directory: openwrt
+      # 预下载依赖包
+      - name: Download all packages
         run: |
-          if [ -f "$GITHUB_WORKSPACE/${{ env.CONFIG_FILE }}" ]; then
-            cp "$GITHUB_WORKSPACE/${{ env.CONFIG_FILE }}" .config
-            echo "使用自定义配置文件 ${{ env.CONFIG_FILE }}"
-          else
-            echo "未找到配置文件，使用默认配置 (make defconfig)"
-            make defconfig
-          fi
+          cd openwrt
+          make download -j$(nproc)
 
-      - name: Run diy-part1.sh (pre-download)
-        working-directory: openwrt
+      # 正式编译（失败自动单线程重试）
+      - name: Compile OpenWrt firmware
         run: |
-          if [ -f "$GITHUB_WORKSPACE/${{ env.DIY_P1_SH }}" ]; then
-            chmod +x "$GITHUB_WORKSPACE/${{ env.DIY_P1_SH }}"
-            "$GITHUB_WORKSPACE/${{ env.DIY_P1_SH }}"
-          fi
-
-      - name: Download package sources
-        working-directory: openwrt
-        run: |
-          make download -j8
-          # 清理下载失败的空文件
-          find dl -size -1024c -exec rm -f {} \;
-
-      - name: Run diy-part2.sh (post-download)
-        working-directory: openwrt
-        run: |
-          if [ -f "$GITHUB_WORKSPACE/${{ env.DIY_P2_SH }}" ]; then
-            chmod +x "$GITHUB_WORKSPACE/${{ env.DIY_P2_SH }}"
-            "$GITHUB_WORKSPACE/${{ env.DIY_P2_SH }}"
-          fi
-
-      - name: Compile firmware
-        working-directory: openwrt
-        run: |
+          cd openwrt
           make -j$(nproc) || make -j1 V=s
 
-      - name: Prepare artifacts
-        id: artifacts
-        working-directory: openwrt
-        run: |
-          # 生成时间戳
-          echo "DATE=$(date +%Y%m%d_%H%M%S)" >> $GITHUB_ENV
-          # 查找固件输出目录
-          FIRMWARE_PATH=$(find bin/targets -name "*.bin" -printf "%h\n" | head -1)
-          if [ -n "$FIRMWARE_PATH" ]; then
-            echo "FIRMWARE_PATH=$FIRMWARE_PATH" >> $GITHUB_ENV
-          fi
-
-      - name: Upload firmware
+      # 上传编译好的固件
+      - name: Upload compiled firmware
         uses: actions/upload-artifact@v4
         with:
-          name: openwrt-firmware-${{ env.DATE }}
-          path: openwrt/bin/targets/**/*
-        if: always()
+          name: OpenWrt-Firmware
+          path: |
+            openwrt/bin/targets/*/*
+            !openwrt/bin/targets/*/*/packages
