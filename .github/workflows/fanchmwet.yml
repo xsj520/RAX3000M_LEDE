@@ -45,18 +45,18 @@ jobs:
           cp 3000m.config openwrt/.config
 
       # 🟡 执行DIY1.sh
-      - name: Run DIY1.sh
+      - name: Run diy-part1.sh
         run: |
-          chmod +x DIY1.sh
-          cp DIY1.sh openwrt/
-          cd openwrt && ./DIY1.sh
+          chmod +x diy-part1.sh
+          cp diy-part1.sh openwrt/
+          cd openwrt && ./diy-part1.sh
 
       # 🟡 执行DIY2.sh
-      - name: Run DIY2.sh
+      - name: Run diy-part2.sh
         run: |
-          chmod +x DIY2.sh
-          cp DIY2.sh openwrt/
-          cd openwrt && ./DIY2.sh
+          chmod +x diy-part2.sh
+          cp diy-part2.sh openwrt/
+          cd openwrt && ./diy-part2.sh
 
       # 更新feeds
       - name: Update & install feeds
