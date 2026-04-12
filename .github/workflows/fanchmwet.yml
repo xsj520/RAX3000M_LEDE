@@ -42,7 +42,7 @@ jobs:
       # 🟢 核心：把你的 30000m.config 设为编译配置
       - name: Apply custom config (3000m.config -> .config)
         run: |
-          cp 30000m.config openwrt/.config
+          cp 3000m.config openwrt/.config
 
       # 🟡 执行DIY1.sh
       - name: Run DIY1.sh
