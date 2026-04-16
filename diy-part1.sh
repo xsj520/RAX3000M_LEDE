@@ -20,6 +20,7 @@
 echo >> feeds.conf.default
 echo 'src-git modem https://github.com/FUjr/modem_feeds.git;main' >> feeds.conf.default
 echo 'src-git mt5700webui https://github.com/aliass532/mt5700webui-openwrt-server.git;main' >> feeds.conf.default
+echo 'src-git istore https://github.com/linkease/istore.git;main' >>feeds.conf.default
 
 # Add a feed source
 echo 'src-git helloworld https://github.com/fw876/helloworld' >>feeds.conf.default
