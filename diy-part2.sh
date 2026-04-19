@@ -22,7 +22,7 @@ sed -i 's/192.168.1.1/192.168.1.2/g' package/base-files/files/bin/config_generat
 # git_sparse_clone main https://github.com/Lienol/openwrt-package luci-app-filebrowser
 # 修改插件名字
 sed -i 's/"网络存储"/"存储"/g' `grep "网络存储" -rl ./`
-# sed -i 's/"iStore"/"商店"/g' `grep "iStore" -rl ./`
+sed -i 's/"iStore"/"商店"/g' `grep "iStore" -rl ./`
 sed -i 's/"Docker"/"容器"/g' `grep "Docker" -rl ./`
 sed -i 's/"Turbo ACC 网络加速"/"网络加速"/g' `grep "Turbo ACC 网络加速" -rl ./`
 
