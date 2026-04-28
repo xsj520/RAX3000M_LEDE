@@ -43,7 +43,7 @@ sed -i 's/"终端"/"终端命令"/g' `grep "终端" -rl ./`
 sed -i 's/"QoS"/"网络限速"/g' `grep "QoS" -rl ./`
 sed -i 's/"Watchcat"/"断网重启"/g' `grep "Watchcat" -rl ./`
 sed -i 's/"Control"/"限速"/g' `grep "Control" -rl ./`
-sed -i 's/"SQM 队列管理"/"网络限速"/g' `grep "SQM 队列管理" -rl ./`
+sed -i 's/"SQM 队列管理"/"网速管控"/g' `grep "SQM 队列管理" -rl ./`
 sed -i 's/"UPnP"/"U P N P"/g' `grep "UPnP" -rl ./`
 sed -i 's/"备份与升级"/"备份升级"/g' `grep "备份与升级" -rl ./`
 sed -i 's/"FileBrowser"/"文件管理"/g' `grep "FileBrowser" -rl ./`
