@@ -8,7 +8,7 @@
 # Description: Build OpenWrt using GitHub Actions
 #
 
-name: 3000m
+name: Lib r3g
 
 on:
   repository_dispatch:
