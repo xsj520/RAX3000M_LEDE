@@ -93,6 +93,7 @@ jobs:
       run: cd openwrt && ./scripts/feeds install -a 
     - name: Fix hostapd compile
       run: |
+        cd openwrt
         sed -i '/he_mu_edca/d' package/network/services/hostapd/src/src/ap/hostapd.c
     - name: Load custom configuration
       run: |
