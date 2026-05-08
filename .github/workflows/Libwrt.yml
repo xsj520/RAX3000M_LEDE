@@ -94,7 +94,7 @@ jobs:
     - name: Fix hostapd compile
       run: |
         cd openwrt
-        sed -i '/he_mu_edca/d' package/network/services/hostapd/src/src/ap/hostapd.c
+        find . -name hostapd.c | xargs sed -i '/he_mu_edca/d'
     - name: Load custom configuration
       run: |
         [ -e files ] && mv files openwrt/files
