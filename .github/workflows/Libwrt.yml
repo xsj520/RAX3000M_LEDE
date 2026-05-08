@@ -112,20 +112,39 @@ jobs:
       run: |
         cd openwrt
         make defconfig
-        # 禁用 IEEE 802.11ax (Wi-Fi 6) 及相关 HE 特性，解决 he_mu_edca 结构体错误
-        echo "CONFIG_IEEE80211AX=n" >> .config
-        echo "CONFIG_HOSTAPD_WIFI6=n" >> .config
-        echo "CONFIG_HOSTAPD_HE=n" >> .config
-        # 也可以直接把 hostapd 相关的高版本特性全部关闭
-        sed -i '/CONFIG_DPP/d' .config
-        sed -i '/CONFIG_OWE/d' .config
-        sed -i '/CONFIG_FILS/d' .config
-        # 重新同步配置，确保修改生效
-        make defconfig
-
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
+     - name: Download package
+  id: package
+  run: |
+    cd openwrt
+    make defconfig
+
+    # ------------------- 新增：替换新版 hostapd -------------------
+    echo "=== 替换新版 hostapd 以支持 he_mu_edca ==="
+    # 1. 删除旧的 hostapd 包
+    rm -rf package/network/services/hostapd
+
+    # 2. 从 OpenWrt 官方 master 分支拉取最新的 hostapd 源码
+    git clone --depth 1 --filter=blob:none --sparse https://git.openwrt.org/openwrt/openwrt.git temp_openwrt
+    cd temp_openwrt
+    git sparse-checkout set package/network/services/hostapd
+    cd ..
+
+    # 3. 把新版 hostapd 复制到你的源码目录里
+    cp -r temp_openwrt/package/network/services/hostapd openwrt/package/network/services/
+    rm -rf temp_openwrt
+    # -----------------------------------------------------------
+
+    # 重新同步配置，确保新版 hostapd 被识别
+    make defconfig
+
+    # 下载依赖包
+    make download -j8
+    find dl -size -1024c -exec ls -l {} \;
+    find dl -size -1024c -exec rm -f {} \;
+   
 
     - name: Compile the firmware
       id: compile
