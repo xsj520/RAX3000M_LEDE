@@ -96,6 +96,7 @@ jobs:
       run: |
         cd openwrt
         find . -name hostapd.c | xargs sed -i '/he_mu_edca/d'
+        
     - name: Load custom configuration
       run: |
         [ -e files ] && mv files openwrt/files
