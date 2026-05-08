@@ -115,35 +115,35 @@ jobs:
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
-     - name: Download package
-  id: package
-  run: |
-    cd openwrt
-    make defconfig
+    - name: Download package
+      id: package
+      run: |
+        cd openwrt
+        make defconfig
 
-    # ------------------- 新增：替换新版 hostapd -------------------
-    echo "=== 替换新版 hostapd 以支持 he_mu_edca ==="
-    # 1. 删除旧的 hostapd 包
-    rm -rf package/network/services/hostapd
+        # ------------------- 新增：替换新版 hostapd -------------------
+        echo "=== 替换新版 hostapd 以支持 he_mu_edca ==="
+        # 1. 删除旧的 hostapd 包
+        rm -rf package/network/services/hostapd
 
-    # 2. 从 OpenWrt 官方 master 分支拉取最新的 hostapd 源码
-    git clone --depth 1 --filter=blob:none --sparse https://git.openwrt.org/openwrt/openwrt.git temp_openwrt
-    cd temp_openwrt
-    git sparse-checkout set package/network/services/hostapd
-    cd ..
+        # 2. 从 OpenWrt 官方 master 分支拉取最新的 hostapd 源码
+        git clone --depth 1 --filter=blob:none --sparse https://git.openwrt.org/openwrt/openwrt.git temp_openwrt
+        cd temp_openwrt
+        git sparse-checkout set package/network/services/hostapd
+        cd ..
 
-    # 3. 把新版 hostapd 复制到你的源码目录里
-    cp -r temp_openwrt/package/network/services/hostapd openwrt/package/network/services/
-    rm -rf temp_openwrt
-    # -----------------------------------------------------------
+        # 3. 把新版 hostapd 复制到你的源码目录里
+        cp -r temp_openwrt/package/network/services/hostapd openwrt/package/network/services/
+        rm -rf temp_openwrt
+        # -----------------------------------------------------------
 
-    # 重新同步配置，确保新版 hostapd 被识别
-    make defconfig
+        # 重新同步配置，确保新版 hostapd 被识别
+        make defconfig
 
-    # 下载依赖包
-    make download -j8
-    find dl -size -1024c -exec ls -l {} \;
-    find dl -size -1024c -exec rm -f {} \;
+        # 下载依赖包
+        make download -j8
+        find dl -size -1024c -exec ls -l {} \;
+        find dl -size -1024c -exec rm -f {} \;
    
 
     - name: Compile the firmware
