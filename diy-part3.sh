@@ -12,7 +12,7 @@
 # Modify default IP
 sed -i 's/192.168.1.1/192.168.1.2/g' package/base-files/files/bin/config_generate
 
-git clone --depth=1 https://github.com/eamonxg/luci-theme-aurora feeds/luci/themes/luci-theme-aurora
+
 
 # 修改版本为编译日期
 # date_version=$(date +"%y.%m.%d")
