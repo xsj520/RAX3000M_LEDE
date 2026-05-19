@@ -51,7 +51,7 @@ sed -i 's/"备份与升级"/"备份升级"/g' `grep "备份与升级" -rl ./`
 
 sed -i 's/"DHCP"/"地址分配"/g' `grep "DHCP" -rl ./`
 sed -i 's/"DNS"/"DNS设置"/g' `grep "DNS" -rl ./`
-sed -i 's/"UPnP IGD 和 PCP"/"端口转发"/g' `grep "UPnP IGD 和 PCP" -rl ./`
+sed -i 's/"UPnP IGD 和 PCP"/"端口映射"/g' `grep "UPnP IGD 和 PCP" -rl ./`
 sed -i 's/"备份与更新"/"备份升级"/g' `grep "备份与更新" -rl ./`
 sed -i 's/"文件浏览器"/"文件管理"/g' `grep "文件浏览器" -rl ./`
 sed -i 's/"进程"/"进程信息"/g' `grep "进程" -rl ./`
