@@ -47,6 +47,7 @@ sed -i 's/"SQM 队列管理"/"网速管控"/g' `grep "SQM 队列管理" -rl ./`
 sed -i 's/"UPnP"/"即插即用"/g' `grep "UPnP" -rl ./`
 sed -i 's/"备份与升级"/"备份升级"/g' `grep "备份与升级" -rl ./`
 sed -i 's/"FileBrowser"/"文件管理"/g' `grep "FileBrowser" -rl ./`
+sed -i 's/"QoS Nftables 版"/"网速限速"/g' `grep "QoS Nftables 版" -rl ./`
 
 ./scripts/feeds update -a
 ./scripts/feeds install -a
