@@ -29,14 +29,3 @@ echo 'src-git mt5700webui https://github.com/aliass532/mt5700webui-openwrt-serve
 # ==========================
 # git clone https://github.com/kenzok8/openwrt-packages package/openwrt-packages
 
-# ==========================
-# 4️⃣ 编译时默认选中 DDNSTO
-# ==========================
-# 可在 diy-part2.sh 或这里写
-echo "CONFIG_PACKAGE_ddnsto=y" >> .config
-echo "CONFIG_PACKAGE_luci-app-ddnsto=y" >> .config
-
-# ==========================
-# 5️⃣ 完成
-# ==========================
-echo "✅ DDNSTO feed 已添加，编译时会自动集成 ddnsto 和 luci-app-ddnsto"
