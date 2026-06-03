@@ -24,6 +24,7 @@ echo 'src-git mt5700webui https://github.com/aliass532/mt5700webui-openwrt-serve
 
 
 # Add a feed source
+git clone https://github.com/kenzok8/openwrt-packages package/openwrt-packages
 #echo 'src-git helloworld https://github.com/fw876/helloworld' >>feeds.conf.default
 #echo 'src-git passwall https://github.com/xiaorouji/openwrt-passwall' >>feeds.conf.default
 
