@@ -10,8 +10,8 @@
 
 
 # 其他常用 feed
-echo 'src-git modem https://github.com/FUjr/modem_feeds.git;main' >> feeds.conf.default
-echo 'src-git mt5700webui https://github.com/aliass532/mt5700webui-openwrt-server.git;main' >> feeds.conf.default
+# echo 'src-git modem https://github.com/FUjr/modem_feeds.git;main' >> feeds.conf.default
+# echo 'src-git mt5700webui https://github.com/aliass532/mt5700webui-openwrt-server.git;main' >> feeds.conf.default
 
 
 # 3️⃣ 添加第三方 feed (可选)
