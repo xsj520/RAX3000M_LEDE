@@ -49,7 +49,7 @@ sed -i 's/"备份与升级"/"备份升级"/g' `grep "备份与升级" -rl ./`
 sed -i 's/"FileBrowser"/"文件管理"/g' `grep "FileBrowser" -rl ./`
 sed -i 's/"QoS Nftables 版"/"网速限速"/g' `grep "QoS Nftables 版" -rl ./`
 sed -i 's/"DDNSTO 远程访问"/"DDNSTO"/g' `grep "DDNSTO 远程访问" -rl ./`
-sed -i 's/"网络向导"/"向导"/g' `grep "网络向导" -rl ./`
+sed -i 's/"网络向导"/"网导"/g' `grep "网络向导" -rl ./`
 sed -i 's/"易有云文件管理器"/"易有文件"/g' `grep "易有云文件管理器" -rl ./`
 
 ./scripts/feeds update -a
