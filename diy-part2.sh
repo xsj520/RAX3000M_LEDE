@@ -48,6 +48,8 @@ sed -i 's/"UPnP"/"即插即用"/g' `grep "UPnP" -rl ./`
 sed -i 's/"备份与升级"/"备份升级"/g' `grep "备份与升级" -rl ./`
 sed -i 's/"FileBrowser"/"文件管理"/g' `grep "FileBrowser" -rl ./`
 sed -i 's/"QoS Nftables 版"/"网速限速"/g' `grep "QoS Nftables 版" -rl ./`
+sed -i 's/"DDNSTO 远程访问"/"DDNSTO"/g' `grep "DDNSTO 远程访问" -rl ./`
+
 
 ./scripts/feeds update -a
 ./scripts/feeds install -a
