@@ -21,7 +21,7 @@ on:
 
 env:
   REPO_URL: https://github.com/xsj520/lede
-  REPO_BRANCH: master
+  REPO_BRANCH: main
   FEEDS_CONF: feeds.conf.default
   CONFIG_FILE: 3g.config
   DIY_P1_SH: diy-part1.sh
@@ -33,6 +33,44 @@ env:
   UPLOAD_RELEASE: true
   TZ: Asia/Shanghai
 
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@main
+
+    - name: Initialization environment
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        #sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
+        sudo add-apt-repository ppa:longsleep/golang-backports -y
+        sudo -E apt-get -qq update
+        sudo -E apt install -y ack antlr3 asciidoc autoconf automake autopoint binutils bison build-essential \
+        bzip2 ccache clang cmake cpio curl device-tree-compiler ecj fastjar flex gawk gettext gcc-multilib \
+        g++-multilib git gnutls-dev gperf haveged help2man intltool lib32gcc-s1 libc6-dev-i386 libelf-dev \
+        libglib2.0-dev libgmp3-dev libltdl-dev libmpc-dev libmpfr-dev libncurses-dev libpython3-dev \
+        libreadline-dev libssl-dev libtool libyaml-dev libz-dev lld llvm lrzsz mkisofs msmtp nano \
+        ninja-build p7zip p7zip-full patch pkgconf python3 python3-pip python3-ply python3-docutils \
+        python3-pyelftools qemu-utils re2c rsync scons squashfs-tools subversion swig texinfo uglifyjs \
+        upx-ucl unzip vim wget xmlto xxd zlib1g-dev zstd
+        sudo -E apt-get -qq autoremove --purge
+        sudo -E apt-get -qq clean
+        sudo apt install golang -y
+        sudo timedatectl set-timezone "$TZ"
+        sudo mkdir -p /mnt/workdir
+        sudo chown $USER:$GROUPS /mnt/workdir
+        go version
+        echo "========== CPU信息 =========="
+        lscpu | grep -E "Model name|Core|CPU\(s\)"
+        echo -e "\n========== 内存信息 =========="
+        free -h
+        echo -e "\n========== 磁盘信息 =========="
+        df -h
+        echo -e "\n========== 系统版本 =========="
+        cat /etc/os-release | grep PRETTY_NAME
 
     - name: Clone source code
       working-directory: /mnt/workdir
@@ -52,8 +90,7 @@ env:
       run: cd openwrt && ./scripts/feeds update -a
 
     - name: Install feeds
-      run: cd openwrt && ./scripts/feeds install -a
-      
+      run: cd openwrt && ./scripts/feeds install -a 
 
     - name: Load custom configuration
       run: |
@@ -74,7 +111,6 @@ env:
       id: package
       run: |
         cd openwrt
-        python --version
         make defconfig
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
@@ -84,7 +120,6 @@ env:
       id: compile
       run: |
         cd openwrt
-        python --version
         ./scripts/feeds update -a
         ./scripts/feeds install -a
         go version
@@ -149,9 +184,7 @@ env:
         [ $UPLOAD_COWTRANSFER = true ] && echo "🔗 [Cowtransfer](${{ steps.cowtransfer.outputs.url }})" >> release.txt
         [ $UPLOAD_WETRANSFER = true ] && echo "🔗 [WeTransfer](${{ steps.wetransfer.outputs.url }})" >> release.txt
         echo "::set-output name=status::success"
-    - name: Clean swapfile
-      run: rm -f ${{ env.FIRMWARE }}/swapfile
-      
+
     - name: Upload firmware to release
       uses: softprops/action-gh-release@v1
       if: steps.tag.outputs.status == 'success' && !cancelled()
