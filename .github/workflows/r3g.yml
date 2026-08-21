@@ -4,6 +4,7 @@ on:
   repository_dispatch:
 
 env:
+  # 使用你自己fork的lede仓库
   REPO_URL: https://github.com/xsj520/lede
   REPO_BRANCH: master
   TARGET: ramips
@@ -16,13 +17,12 @@ env:
   UPLOAD_BIN_DIR: false
   UPLOAD_LOG: true
   USE_GITHUB_MIRROR: true
-  # 开启自动发布到Releases
   CREATE_RELEASE: true
   RELEASE_TITLE: "小米R3G LEDE固件 ${{ github.run_number }}"
   RELEASE_BODY: |
     自动编译LEDE固件
     设备：小米R3G(mt7621)
-    源码：coolsnowwolf/lede
+    源码：xsj520/lede（fork coolsnowwolf/lede）
     构建编号：${{ github.run_number }}
 
 jobs:
@@ -33,7 +33,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Initialization environment & Build
-        uses: P3TERX/Actions-OpenWrt@master
+        uses: P3TERX/Actions-OpenWrt@main
         with:
           repo_url: ${{ env.REPO_URL }}
           repo_branch: ${{ env.REPO_BRANCH }}
