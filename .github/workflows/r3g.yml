@@ -4,49 +4,58 @@ on:
   repository_dispatch:
 
 env:
-  # 使用你自己fork的lede仓库
   REPO_URL: https://github.com/xsj520/lede
   REPO_BRANCH: master
-  TARGET: ramips
-  SUBTARGET: mt7621
-  DEVICE: xiaomi_redmi_ax6s
   CONFIG_FILE: .config
   DIY_PART1: diy-part1.sh
   DIY_PART2: diy-part2.sh
-  UPLOAD_FIRMWARE: true
-  UPLOAD_BIN_DIR: false
-  UPLOAD_LOG: true
-  USE_GITHUB_MIRROR: true
-  CREATE_RELEASE: true
-  RELEASE_TITLE: "小米R3G LEDE固件 ${{ github.run_number }}"
-  RELEASE_BODY: |
-    自动编译LEDE固件
-    设备：小米R3G(mt7621)
-    源码：xsj520/lede（fork coolsnowwolf/lede）
-    构建编号：${{ github.run_number }}
+  TARGET: ramips
+  SUBTARGET: mt7621
+  DEVICE: xiaomi_redmi_ax6s
 
 jobs:
   build:
     runs-on: ubuntu-22.04
     steps:
-      - name: Checkout
+      - name: Checkout current repo
         uses: actions/checkout@v4
 
-      - name: Initialization environment & Build
-        uses: P3TERX/Actions-OpenWrt@main
+      - name: Install build dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y build-essential asciidoc binutils bzip2 gawk gettext git libncurses5-dev libz-dev patch python3 python3-setuptools unzip zlib1g-dev lib32gcc1 libc6-dev-i386 subversion flex uglifyjs git-core gcc-multilib p7zip p7zip-full msmtp libssl-dev texinfo libglib2.0-dev xmlto qemu-utils upx libelf-dev autoconf automake libtool autopoint device-tree-compiler antlr3 gperf wget curl swig rsync
+
+      - name: Clone LEDE source
+        run: |
+          git clone ${{ env.REPO_URL }} -b ${{ env.REPO_BRANCH }} openwrt
+          cd openwrt
+          cp ../${{ env.CONFIG_FILE }} .config
+          chmod +x ../${{ env.DIY_PART1 }} ../${{ env.DIY_PART2 }}
+          ../${{ env.DIY_PART1 }}
+          ./scripts/feeds update -a
+          ./scripts/feeds install -a
+          ../${{ env.DIY_PART2 }}
+
+      - name: Build firmware
+        run: |
+          cd openwrt
+          make -j$(nproc) download
+          make -j$(nproc)
+
+      - name: Upload firmware artifact
+        uses: actions/upload-artifact@v4
         with:
-          repo_url: ${{ env.REPO_URL }}
-          repo_branch: ${{ env.REPO_BRANCH }}
-          config_file: ${{ env.CONFIG_FILE }}
-          diy_part1: ${{ env.DIY_PART1 }}
-          diy_part2: ${{ env.DIY_PART2 }}
-          target: ${{ env.TARGET }}
-          subtarget: ${{ env.SUBTARGET }}
-          device: ${{ env.DEVICE }}
-          upload_firmware: ${{ env.UPLOAD_FIRMWARE }}
-          upload_bin_dir: ${{ env.UPLOAD_BIN_DIR }}
-          upload_log: ${{ env.UPLOAD_LOG }}
-          use_github_mirror: ${{ env.USE_GITHUB_MIRROR }}
-          create_release: ${{ env.CREATE_RELEASE }}
-          release_title: ${{ env.RELEASE_TITLE }}
-          release_body: ${{ env.RELEASE_BODY }}
+          name: firmware
+          path: openwrt/bin/targets/${{ env.TARGET }}/${{ env.SUBTARGET }}/*.bin
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        if: success()
+        with:
+          name: "小米R3G LEDE固件 ${{ github.run_number }}"
+          body: |
+            自动编译LEDE固件
+            设备：小米R3G(mt7621)
+            源码：xsj520/lede(fork coolsnowwolf/lede)
+            构建编号：${{ github.run_number }}
+          files: openwrt/bin/targets/${{ env.TARGET }}/${{ env.SUBTARGET }}/*.bin
