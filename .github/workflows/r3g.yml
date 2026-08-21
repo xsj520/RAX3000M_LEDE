@@ -7,7 +7,7 @@ env:
   REPO_URL: https://github.com/xsj520/lede
   REPO_BRANCH: master
   DIY_PART1: diy-part1.sh
-  DIY_PART2: diy-part2.sh
+  DIY_PART2: diy-part3.sh
   TARGET: ramips
   SUBTARGET: mt7621
   DEVICE: xiaomi_redmi_ax6s
