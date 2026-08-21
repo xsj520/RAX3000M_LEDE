@@ -60,14 +60,14 @@ jobs:
 
       - name: Upload bin directory
         uses: actions/upload-artifact@main
-        if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
+        if: ${{ steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true' }}
         with:
           name: OpenWrt_bin${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
           path: openwrt/bin
 
       - name: Organize files
         id: organize
-        if: env.UPLOAD_FIRMWARE == 'true' && ${{ !cancelled() }}
+        if: ${{ env.UPLOAD_FIRMWARE == 'true' && !cancelled() }}
         run: |
           cd openwrt/bin/targets/*/*
           rm -rf packages
@@ -76,26 +76,26 @@ jobs:
 
       - name: Upload firmware directory
         uses: actions/upload-artifact@main
-        if: steps.organize.outputs.status == 'success' && ${{ !cancelled() }}
+        if: ${{ steps.organize.outputs.status == 'success' && !cancelled() }}
         with:
           name: OpenWrt_firmware${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
           path: ${{ env.FIRMWARE }}
 
       - name: Generate release tag
         id: tag
-        if: env.UPLOAD_RELEASE == 'true' && ${{ !cancelled() }}
+        if: ${{ env.UPLOAD_RELEASE == 'true' && !cancelled() }}
         run: |
-          echo "::set-output name=release_tag::$(date +"%Y.%m.%d-%H%M")" >> $GITHUB_OUTPUT
+          TAG=$(date +"%Y.%m.%d-%H%M")
+          echo "release_tag=$TAG" >> $GITHUB_OUTPUT
+          echo "status=success" >> $GITHUB_OUTPUT
           touch release.txt
-          echo "::set-output name=status::success"
 
       - name: Upload firmware to release
         uses: softprops/action-gh-release@v1
-        if: steps.tag.outputs.status == 'success' && ${{ !cancelled() }}
+        if: ${{ steps.tag.outputs.status == 'success' && !cancelled() }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.tag.outputs.release_tag }}
           body_path: release.txt
           files: ${{ env.FIRMWARE }}/*
-
