@@ -40,7 +40,14 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@main
-
+      
+    - name: Upgrade CMake to 3.31+
+        run: |
+          wget https://github.com/Kitware/CMake/releases/download/v3.31.0/cmake-3.31.0-linux-x86_64.tar.gz
+          tar -zxf cmake-3.31.0-linux-x86_64.tar.gz
+          sudo cp -r cmake-3.31.0-linux-x86_64/bin/* /usr/bin/
+          sudo cp -r cmake-3.31.0-linux-x86_64/share/* /usr/share/
+          cmake --version
     - name: Initialization environment
       env:
         DEBIAN_FRONTEND: noninteractive
