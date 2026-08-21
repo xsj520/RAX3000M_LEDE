@@ -1,4 +1,4 @@
-name: r3g
+name: Build OpenWrt Firmware
 on:
   workflow_dispatch:
 
@@ -6,7 +6,7 @@ env:
   REPO_URL: https://github.com/xsj520/lede
   REPO_BRANCH: master
   DIY_PART1: diy-part1.sh
-  DIY_PART2: diy-part3.sh
+  DIY_PART2: diy-part2.sh
   TARGET: ramips
   SUBTARGET: mt7621
   DEVICE: xiaomi_mi_r3g
@@ -89,6 +89,11 @@ jobs:
           echo "release_tag=$TAG" >> $GITHUB_OUTPUT
           echo "status=success" >> $GITHUB_OUTPUT
           touch release.txt
+          # 关键：真正创建git tag并推送回仓库
+          git config --global user.name "github‑actions"
+          git config --global user.email "actions@github.com"
+          git tag $TAG
+          git push origin $TAG
 
       - name: Upload firmware to release
         uses: softprops/action-gh-release@v1
@@ -99,3 +104,4 @@ jobs:
           tag_name: ${{ steps.tag.outputs.release_tag }}
           body_path: release.txt
           files: ${{ env.FIRMWARE }}/*
+
