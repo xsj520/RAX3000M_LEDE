@@ -55,7 +55,7 @@ jobs:
           echo "FILE_DATE=$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
 
       - name: Check space usage
-        if: !cancelled()
+        if: ${{ !cancelled() }}
         run: df -hT
 
       - name: Upload bin directory
@@ -67,7 +67,7 @@ jobs:
 
       - name: Organize files
         id: organize
-        if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
+        if: env.UPLOAD_FIRMWARE == 'true' && ${{ !cancelled() }}
         run: |
           cd openwrt/bin/targets/*/*
           rm -rf packages
@@ -76,14 +76,14 @@ jobs:
 
       - name: Upload firmware directory
         uses: actions/upload-artifact@main
-        if: steps.organize.outputs.status == 'success' && !cancelled()
+        if: steps.organize.outputs.status == 'success' && ${{ !cancelled() }}
         with:
           name: OpenWrt_firmware${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
           path: ${{ env.FIRMWARE }}
 
       - name: Generate release tag
         id: tag
-        if: env.UPLOAD_RELEASE == 'true' && !cancelled()
+        if: env.UPLOAD_RELEASE == 'true' && ${{ !cancelled() }}
         run: |
           echo "::set-output name=release_tag::$(date +"%Y.%m.%d-%H%M")" >> $GITHUB_OUTPUT
           touch release.txt
@@ -91,7 +91,7 @@ jobs:
 
       - name: Upload firmware to release
         uses: softprops/action-gh-release@v1
-        if: steps.tag.outputs.status == 'success' && !cancelled()
+        if: steps.tag.outputs.status == 'success' && ${{ !cancelled() }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -107,7 +107,7 @@ jobs:
 
       - name: Remove old Releases
         uses: dev-dprasad/delete-older-releases@v0.1.0
-        if: env.UPLOAD_RELEASE == 'true' && !cancelled()
+        if: env.UPLOAD_RELEASE == 'true' && ${{ !cancelled() }}
         with:
           keep_latest: 10
           delete_tags: true
