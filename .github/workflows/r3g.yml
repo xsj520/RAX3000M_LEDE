@@ -1,4 +1,4 @@
-name: Build OpenWrt Firmware
+name: r3g
 on:
   workflow_dispatch:
 
