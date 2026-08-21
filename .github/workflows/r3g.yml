@@ -7,7 +7,7 @@ env:
   REPO_URL: https://github.com/xsj520/lede
   REPO_BRANCH: master
   DIY_PART1: diy-part1.sh
-  DIY_PART2: diy-part3.sh
+  DIY_PART2: diy-part2.sh
   TARGET: ramips
   SUBTARGET: mt7621
   DEVICE: xiaomi_redmi_ax6s
@@ -43,19 +43,12 @@ jobs:
           make -j$(nproc) download
           make -j$(nproc)
 
-      - name: Upload firmware artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: firmware
-          path: openwrt/bin/targets/${{ env.TARGET }}/${{ env.SUBTARGET }}/*.bin
-
       - name: Create Draft Release to GitHub Releases
         if: success()
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -e
-          # 创建草稿release，不打tag
           gh release create "build-${{ github.run_number }}" \
             --draft \
             --target "${{ github.sha }}" \
