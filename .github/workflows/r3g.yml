@@ -6,7 +6,6 @@ on:
 env:
   REPO_URL: https://github.com/xsj520/lede
   REPO_BRANCH: master
-  CONFIG_FILE: 3g.config
   DIY_PART1: diy-part1.sh
   DIY_PART2: diy-part2.sh
   TARGET: ramips
@@ -16,6 +15,8 @@ env:
 jobs:
   build:
     runs-on: ubuntu-22.04
+    permissions:
+      contents: write
     steps:
       - name: Checkout current repo
         uses: actions/checkout@v4
@@ -29,12 +30,12 @@ jobs:
         run: |
           git clone ${{ env.REPO_URL }} -b ${{ env.REPO_BRANCH }} openwrt
           cd openwrt
-          cp ../${{ env.CONFIG_FILE }} .config
           chmod +x ../${{ env.DIY_PART1 }} ../${{ env.DIY_PART2 }}
           ../${{ env.DIY_PART1 }}
           ./scripts/feeds update -a
           ./scripts/feeds install -a
           ../${{ env.DIY_PART2 }}
+          make defconfig TARGET=${{ env.TARGET }} SUBTARGET=${{ env.SUBTARGET }} DEVICE=${{ env.DEVICE }}
 
       - name: Build firmware
         run: |
@@ -48,14 +49,19 @@ jobs:
           name: firmware
           path: openwrt/bin/targets/${{ env.TARGET }}/${{ env.SUBTARGET }}/*.bin
 
-      - name: Create Release
-        uses: softprops/action-gh-release@v2
+      - name: Create Draft Release to GitHub Releases
         if: success()
-        with:
-          name: "小米R3G LEDE固件 ${{ github.run_number }}"
-          body: |
-            自动编译LEDE固件
-            设备：小米R3G(mt7621)
-            源码：xsj520/lede(fork coolsnowwolf/lede)
-            构建编号：${{ github.run_number }}
-          files: openwrt/bin/targets/${{ env.TARGET }}/${{ env.SUBTARGET }}/*.bin
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -e
+          # 创建草稿release，不打tag
+          gh release create "build-${{ github.run_number }}" \
+            --draft \
+            --target "${{ github.sha }}" \
+            --title "小米R3G LEDE固件 #${{ github.run_number }}" \
+            --notes "自动编译LEDE固件
+设备：小米R3G(mt7621)
+源码：xsj520/lede(fork coolsnowwolf/lede)
+构建编号：${{ github.run_number }}" \
+            openwrt/bin/targets/${{ env.TARGET }}/${{ env.SUBTARGET }}/*.bin
