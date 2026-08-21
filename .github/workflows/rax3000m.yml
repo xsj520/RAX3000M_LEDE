@@ -71,7 +71,17 @@ jobs:
         df -h
         echo -e "\n========== 系统版本 =========="
         cat /etc/os-release | grep PRETTY_NAME
-
+       
+    - name: Install CMake
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y wget
+        wget https://github.com/Kitware/CMake/releases/download/v3.31.6/cmake-3.31.6-linux-x86_64.sh
+        chmod +x cmake-3.31.6-linux-x86_64.sh
+        sudo ./cmake-3.31.6-linux-x86_64.sh --skip-license --prefix=/usr/local
+        sudo ln -sf /usr/local/bin/cmake /usr/bin/cmake
+        cmake --version
+        
     - name: Clone source code
       working-directory: /mnt/workdir
       run: |
@@ -116,15 +126,6 @@ jobs:
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
         
-    - name: Install CMake
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y wget
-        wget https://github.com/Kitware/CMake/releases/download/v3.31.6/cmake-3.31.6-linux-x86_64.sh
-        chmod +x cmake-3.31.6-linux-x86_64.sh
-        sudo ./cmake-3.31.6-linux-x86_64.sh --skip-license --prefix=/usr/local
-        sudo ln -sf /usr/local/bin/cmake /usr/bin/cmake
-        cmake --version
         
     - name: Compile the firmware
       id: compile
