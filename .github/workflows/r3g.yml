@@ -6,7 +6,7 @@ on:
 env:
   REPO_URL: https://github.com/xsj520/lede
   REPO_BRANCH: master
-  CONFIG_FILE: .config
+  CONFIG_FILE: 3g.config
   DIY_PART1: diy-part1.sh
   DIY_PART2: diy-part2.sh
   TARGET: ramips
