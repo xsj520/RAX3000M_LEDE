@@ -1,7 +1,6 @@
 name: Build Xiaomi R3G LEDE
 on:
   workflow_dispatch:
-  repository_dispatch:
 
 env:
   REPO_URL: https://github.com/xsj520/lede
@@ -43,12 +42,11 @@ jobs:
           make -j$(nproc) download
           make -j$(nproc)
 
-      - name: Create Draft Release to GitHub Releases
+      - name: Create Draft Release (No tag required)
         if: success()
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          set -e
           gh release create "build-${{ github.run_number }}" \
             --draft \
             --target "${{ github.sha }}" \
