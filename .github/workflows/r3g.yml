@@ -1,20 +1,26 @@
 name: r3g
 on:
+  repository_dispatch:
   workflow_dispatch:
+    inputs:
+      ssh:
+        description: 'SSH connection to Actions'
+        required: false
+        default: 'false'
 
 env:
   REPO_URL: https://github.com/xsj520/lede
-  REPO_BRANCH: master
-  DIY_PART1: diy-part1.sh
-  DIY_PART2: diy-part3.sh
-  TARGET: ramips
-  SUBTARGET: mt7621
-  DEVICE: xiaomi_mi_r3g
-  UPLOAD_RELEASE: 'true'
-  UPLOAD_COWTRANSFER: 'false'
-  UPLOAD_WETRANSFER: 'false'
-  UPLOAD_BIN_DIR: 'false'
-  UPLOAD_FIRMWARE: 'true'
+  REPO_BRANCH: main
+  FEEDS_CONF: feeds.conf.default
+  CONFIG_FILE: 3g.config
+  DIY_P1_SH: diy-part1.sh
+  DIY_P2_SH: diy-part3.sh
+  UPLOAD_BIN_DIR: false
+  UPLOAD_FIRMWARE: true
+  UPLOAD_COWTRANSFER: false
+  UPLOAD_WETRANSFER: false
+  UPLOAD_RELEASE: true
+  TZ: Asia/Shanghai
 
 jobs:
   build:
