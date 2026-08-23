@@ -47,10 +47,10 @@ jobs:
           ../${{ env.DIY_P1_SH }}
           ./scripts/feeds update -a
           ./scripts/feeds install -a
-          ../${{ env.DIY_P2_SH }}
-          # 删除旧config，使用仓库内的3g.config
+          # 先复制3g.config，再运行diy‑part3.sh，sed修改才不会被覆盖
           rm -f .config
           cp ../${{ env.CONFIG_FILE }} .config
+          ../${{ env.DIY_P2_SH }}
 
       - name: Compile firmware
         id: compile
