@@ -39,11 +39,9 @@ jobs:
           ./scripts/feeds update -a
           ./scripts/feeds install -a
           ../${{ env.DIY_PART2 }}
-          # 关键：删除旧config，防止x86残留配置污染
+          # 强制删除旧config，避免x86残留配置污染
           rm -f .config
           make defconfig TARGET=${{ env.TARGET }} SUBTARGET=${{ env.SUBTARGET }} DEVICE=${{ env.DEVICE }}
-          # 关闭node host，避免python2.7编译失败
-          sed -i 's/CONFIG_PACKAGE_node_HOST=y/# CONFIG_PACKAGE_node_HOST is not set/g' .config
 
       - name: Compile firmware
         id: compile
@@ -91,11 +89,11 @@ jobs:
         if: ${{ env.UPLOAD_RELEASE == 'true' && !cancelled() }}
         run: |
           TAG=$(date +"%Y.%m.%d-%H%M")
-          # 标签前缀加上 R3G_，Release标题变成 R3G_2026.08.23‑xxxx
+          # 标签前缀 R3G_，区分x86的release
           echo "release_tag=R3G_$TAG" >> $GITHUB_OUTPUT
           echo "status=success" >> $GITHUB_OUTPUT
           touch release.txt
-          echo "小米R3G固件" >> release.txt
+          echo "小米 R3G 固件" >> release.txt
 
       - name: Upload firmware to release
         uses: softprops/action-gh-release@v2
@@ -107,3 +105,4 @@ jobs:
           body_path: release.txt
           files: ${{ env.FIRMWARE }}/*
           generate_release_notes: false
+
