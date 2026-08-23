@@ -57,9 +57,9 @@ jobs:
         run: |
           cd openwrt
           ./scripts/feeds update -a
-          ./scripts/feeds install -a
-          # 二次防护：强制关闭node‑host，防止feeds install复原配置
+          # 【关键】feeds install之前就禁用node‑host，阻止它被加入编译队列
           sed -i 's/CONFIG_PACKAGE_node-host=y/# CONFIG_PACKAGE_node-host is not set/g' .config
+          ./scripts/feeds install -a
           go version
           echo -e "$(nproc) thread compile"
           make -j$(nproc) || make -j1 || make -j1 V=s
