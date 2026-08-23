@@ -21,6 +21,9 @@ env:
   UPLOAD_WETRANSFER: false
   UPLOAD_RELEASE: true
   TZ: Asia/Shanghai
+  TARGET: ramips
+  SUBTARGET: mt7621
+  DEVICE: xiaomi_mi_r3g
 
 jobs:
   build:
@@ -40,14 +43,14 @@ jobs:
         run: |
           git clone ${{ env.REPO_URL }} -b ${{ env.REPO_BRANCH }} openwrt
           cd openwrt
-          chmod +x ../${{ env.DIY_PART1 }} ../${{ env.DIY_PART2 }}
-          ../${{ env.DIY_PART1 }}
+          chmod +x ../${{ env.DIY_P1_SH }} ../${{ env.DIY_P2_SH }}
+          ../${{ env.DIY_P1_SH }}
           ./scripts/feeds update -a
           ./scripts/feeds install -a
-          ../${{ env.DIY_PART2 }}
-          # 强制删除旧config，避免x86残留配置污染
+          ../${{ env.DIY_P2_SH }}
+          # 删除旧config，使用仓库内的3g.config
           rm -f .config
-          make defconfig TARGET=${{ env.TARGET }} SUBTARGET=${{ env.SUBTARGET }} DEVICE=${{ env.DEVICE }}
+          cp ../${{ env.CONFIG_FILE }} .config
 
       - name: Compile firmware
         id: compile
@@ -95,7 +98,6 @@ jobs:
         if: ${{ env.UPLOAD_RELEASE == 'true' && !cancelled() }}
         run: |
           TAG=$(date +"%Y.%m.%d-%H%M")
-          # 标签前缀 R3G_，区分x86的release
           echo "release_tag=R3G_$TAG" >> $GITHUB_OUTPUT
           echo "status=success" >> $GITHUB_OUTPUT
           touch release.txt
