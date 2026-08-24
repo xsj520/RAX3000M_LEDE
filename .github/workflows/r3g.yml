@@ -56,13 +56,13 @@ jobs:
         id: compile
         run: |
           cd openwrt
-          # 禁用node‑host配置
+          # 1. 先把config里node‑host关掉
           sed -i 's/CONFIG_PACKAGE_node-host=y/# CONFIG_PACKAGE_node-host is not set/g' .config
+          # 2.【关键】在feeds install之前，删除feed源里的node，不让feeds把node‑host安装进来
+          rm -rf feeds/packages/lang/node
           ./scripts/feeds install -a
-          # ========== 关键：彻底删除node‑host源码，阻止编译，解决Python2.7报错 ==========
+          # 兜底删除已经生成的hostpkg目录
           rm -rf build_dir/hostpkg/node
-          rm -rf package/feeds/packages/lang/node
-          # ======================================================================
           go version
           echo -e "$(nproc) thread compile"
           make -j$(nproc) || make -j1 || make -j1 V=s
@@ -118,3 +118,4 @@ jobs:
           body_path: release.txt
           files: ${{ env.FIRMWARE }}/*
           generate_release_notes: false
+
