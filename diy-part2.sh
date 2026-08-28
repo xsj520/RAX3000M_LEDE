@@ -52,5 +52,5 @@ sed -i 's/"DDNSTO 远程控制"/"DDNSTO"/g' `grep "DDNSTO 远程控制" -rl ./`
 sed -i 's/"网络向导"/"网导"/g' `grep "网络向导" -rl ./`
 sed -i 's/"易有云文件管理器"/"易有文件"/g' `grep "易有云文件管理器" -rl ./`
 
-./scripts/feeds update -a
-./scripts/feeds install -a
+# ./scripts/feeds update -a
+# ./scripts/feeds install -a
