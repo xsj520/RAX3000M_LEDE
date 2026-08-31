@@ -8,7 +8,7 @@
 # Description: Build OpenWrt using GitHub Actions
 #
 
-name: 3000m
+name: Build OpenWrt
 
 on:
   repository_dispatch:
@@ -20,8 +20,8 @@ on:
         default: 'false'
 
 env:
-  REPO_URL: https://github.com/xsj520/op
-  REPO_BRANCH: main
+  REPO_URL: https://github.com/xsj529/op
+  REPO_BRANCH: master
   FEEDS_CONF: feeds.conf.default
   CONFIG_FILE: 3000m.config
   DIY_P1_SH: diy-part1.sh
@@ -40,7 +40,7 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@main
-      
+
     - name: Initialization environment
       env:
         DEBIAN_FRONTEND: noninteractive
@@ -62,7 +62,7 @@ jobs:
         sudo timedatectl set-timezone "$TZ"
         sudo mkdir -p /mnt/workdir
         sudo chown $USER:$GROUPS /mnt/workdir
-        go version
+        #go version
         echo "========== CPU信息 =========="
         lscpu | grep -E "Model name|Core|CPU\(s\)"
         echo -e "\n========== 内存信息 =========="
@@ -71,17 +71,7 @@ jobs:
         df -h
         echo -e "\n========== 系统版本 =========="
         cat /etc/os-release | grep PRETTY_NAME
-       
-    - name: Install CMake
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y wget
-        wget https://github.com/Kitware/CMake/releases/download/v3.31.6/cmake-3.31.6-linux-x86_64.sh
-        chmod +x cmake-3.31.6-linux-x86_64.sh
-        sudo ./cmake-3.31.6-linux-x86_64.sh --skip-license --prefix=/usr/local
-        sudo ln -sf /usr/local/bin/cmake /usr/bin/cmake
-        cmake --version
-        
+
     - name: Clone source code
       working-directory: /mnt/workdir
       run: |
@@ -125,15 +115,14 @@ jobs:
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
-        
-        
+
     - name: Compile the firmware
       id: compile
       run: |
         cd openwrt
         ./scripts/feeds update -a
         ./scripts/feeds install -a
-        go version
+        #go version
         echo -e "$(nproc) thread compile"
         make -j$(nproc) || make -j1 || make -j1 V=s
         echo "::set-output name=status::success"
