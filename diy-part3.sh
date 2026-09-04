@@ -59,4 +59,4 @@ sed -i 's/"进程"/"进程信息"/g' `grep "进程" -rl ./`
 # ./scripts/feeds update -a
 # ./scripts/feeds install -a
 # 禁用node‑host，规避Python2.7依赖
-sed -i 's/CONFIG_PACKAGE_node-host=y/# CONFIG_PACKAGE_node-host is not set/g' .config
+# sed -i 's/CONFIG_PACKAGE_node-host=y/# CONFIG_PACKAGE_node-host is not set/g' .config
