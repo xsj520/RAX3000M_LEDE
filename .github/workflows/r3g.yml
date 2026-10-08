@@ -59,12 +59,22 @@ jobs:
         sudo -E apt-get -qq autoremove --purge
         sudo -E apt-get -qq clean
         sudo apt install golang -y
+
+        # 安装 Python2.7 预编译包
+        cd /tmp
+        wget https://github.com/lewispaulwright/python27-bin/releases/download/v2.7.18/python2.7.18-ubuntu2404.tar.xz
+        sudo tar -Jxf python2.7.18-ubuntu2404.tar.xz -C /usr/local
+        sudo ln -sf /usr/local/bin/python2.7 /usr/local/bin/python2
+        export PATH="/usr/local/bin:$PATH"
+        python2 -V
+        python2.7 -V
+
         sudo timedatectl set-timezone "$TZ"
         sudo mkdir -p /mnt/workdir
-        sudo chown $USER:$GROUPS /mnt/workdir
+        sudo chown $USER:$USER /mnt/workdir
         #go version
         echo "========== CPU信息 =========="
-        lscpu | grep -E "Model name|Core|CPU\(s\)"
+        lscpu | grep -E "Model name|CPU\(s\)"
         echo -e "\n========== 内存信息 =========="
         free -h
         echo -e "\n========== 磁盘信息 =========="
@@ -90,7 +100,7 @@ jobs:
       run: cd openwrt && ./scripts/feeds update -a
 
     - name: Install feeds
-      run: cd openwrt && ./scripts/feeds install -a 
+      run: cd openwrt && ./scripts/feeds install -a
 
     - name: Load custom configuration
       run: |
@@ -119,12 +129,29 @@ jobs:
     - name: Compile the firmware
       id: compile
       run: |
+        # 把python2路径带入编译环境，不要删除
+        export PATH="/usr/local/bin:$PATH"
         cd openwrt
+
+        # 更新并安装全部插件源
         ./scripts/feeds update -a
         ./scripts/feeds install -a
-        #go version
+
+        # =========打开需要的软件包=========
+        echo 'CONFIG_PACKAGE_node=y' >> .config
+        echo 'CONFIG_PACKAGE_luci-app-nginx-ui=y' >> .config
+
+        # ！！这一行绝对不能删掉，校验并且自动补全依赖
+        make defconfig
+
+        # 打印出来检查配置是否生效，看action运行日志
+        echo "===== Verify node & nginx‑ui config ====="
+        grep -E "CONFIG_PACKAGE_node|CONFIG_PACKAGE_luci-app-nginx-ui" .config
+
+        # 正式开始编译
         echo -e "$(nproc) thread compile"
         make -j$(nproc) || make -j1 || make -j1 V=s
+
         echo "::set-output name=status::success"
         grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/' > DEVICE_NAME
         [ -s DEVICE_NAME ] && echo "DEVICE_NAME=_$(cat DEVICE_NAME)" >> $GITHUB_ENV
@@ -168,7 +195,7 @@ jobs:
 
     - name: Upload firmware to WeTransfer
       id: wetransfer
-      if: steps.organize.outputs.status == 'success' && env.UPLOAD_WETRANSFER == 'true' && !cancelled()
+      if: steps.organize.outputs.status == 'true' && env.UPLOAD_WETRANSFER == 'true' && !cancelled()
       run: |
         curl -fsSL git.io/file-transfer | sh
         ./transfer wet -s -p 16 --no-progress ${FIRMWARE} 2>&1 | tee wetransfer.log
@@ -209,3 +236,4 @@ jobs:
         delete_tags: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
