@@ -131,6 +131,13 @@ jobs:
         echo 'CONFIG_PACKAGE_node=y' >> .config
         echo 'CONFIG_PACKAGE_luci-app-nginx-ui=y' >> .config
 
+        # 在 make defconfig 这行的前面，插入下面三行
+
+        # =====自定义固件版本(B方案)=====
+        echo 'CONFIG_VERSION_DIST="MY‑ROUTER"' >> .config
+        echo 'CONFIG_VERSION_NUMBER="2026‑10‑Custom"' >> .config
+        echo 'CONFIG_VERSION_HOME_URL=""' >> .config
+        
         make defconfig
 
         echo "===== Verify node & nginx‑ui config ====="
