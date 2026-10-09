@@ -57,11 +57,6 @@ sed -i 's/"备份与更新"/"备份升级"/g' `grep "备份与更新" -rl ./`
 sed -i 's/"进程"/"进程信息"/g' `grep "进程" -rl ./`
 sed -i 's/"DDNSTO 远程控制"/"DDNSTO"/g' `grep "DDNSTO 远程控制" -rl ./`
 
-#替换Powered by这行文字
-sed -i 's/Powered by LuCI.*/xsj/g' package/luci-theme-argon/root/usr/share/ucode/luci/template/themes/argon/footer.ut
-
-#删除ArgonTheme版本链接
-sed -i 's|<a href="https://github.com/jerrykuku.*</a >||g' package/luci-theme-argon/root/usr/share/ucode/luci/template/themes/argon/footer.ut
 
 # ./scripts/feeds update -a
 # ./scripts/feeds install -a
