@@ -18,3 +18,14 @@
 
 # git clone https://github.com/kenzok8/openwrt-packages package/openwrt-packages
 
+#先删除源码里面自带旧argon主题
+rm -rf package/luci-theme-argon
+
+#再重新拉取官方新版本
+git clone https://github.com/jerrykuku/luci-theme-argon.git package/luci-theme-argon
+
+# ↓↓ 紧接着这里粘贴你的sed删除footer代码！
+LOGIN_HTML="./package/luci-theme-argon/luci/templates/login.htm"
+if [ -f "$LOGIN_HTML" ]; then
+    sed -i '/<div class="login-footer">/,/<\/div>/d' "${LOGIN_HTML}"
+fi
