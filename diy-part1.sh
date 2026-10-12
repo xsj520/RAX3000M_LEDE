@@ -17,7 +17,7 @@
 # 3️⃣ 添加第三方 feed (可选)
 
 # git clone https://github.com/kenzok8/openwrt-packages package/openwrt-packages
-git clone https://github.com/eamonxg/luci-theme-aurora.git package/luci-theme-aurora
+git clone https://github.com/xsj520/luci-theme-aurora.git package/luci-theme-aurora
 
 
 
