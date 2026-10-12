@@ -17,9 +17,6 @@
 # 3️⃣ 添加第三方 feed (可选)
 
 # git clone https://github.com/kenzok8/openwrt-packages package/openwrt-packages
+git clone https://github.com/eamonxg/luci-theme-aurora.git package/luci-theme-aurora
 
 
-# --- 4. Clone Aurora theme ---
-echo "=== Cloning Aurora theme ==="
-rm -rf feeds/luci/themes/luci-theme-aurora
-git clone --depth=1 https://github.com/eamonxg/luci-theme-aurora feeds/luci/themes/luci-theme-aurora
