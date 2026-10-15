@@ -63,6 +63,7 @@ jobs:
         make -j$(nproc)
         sudo make install
         sudo ln -sf /usr/local/bin/python2.7 /usr/bin/python2
+        sudo ldconfig
         cd ..
         python2 --version
 
