@@ -146,7 +146,7 @@ jobs:
         echo 'CONFIG_VERSION_HOME_URL=""' >> .config
         
         make defconfig
-        make oldconfig </dev/null
+        yes "" | make kernel_oldconfig
         echo "===== Verify node & nginx‑ui config ====="
         grep -E "CONFIG_PACKAGE_node|CONFIG_PACKAGE_luci-app-nginx-ui" .config
 
