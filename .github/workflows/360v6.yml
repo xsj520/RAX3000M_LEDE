@@ -8,7 +8,7 @@
 # Description: Build OpenWrt using GitHub Actions
 #
 
-name: 360v6
+name: r3g
 
 on:
   repository_dispatch:
@@ -35,7 +35,7 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
 
     steps:
     - name: Checkout
@@ -45,26 +45,29 @@ jobs:
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
-        #sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
         sudo add-apt-repository ppa:longsleep/golang-backports -y
         sudo -E apt-get -qq update
         sudo apt install -y ack antlr3 asciidoc autoconf automake autopoint binutils bison build-essential \
-        bzip2 ccache clang cmake cpio curl device-tree-compiler flex gawk gcc-multilib g++-multilib gettext \
-        genisoimage git gperf haveged help2man intltool libc6-dev-i386 libelf-dev libfuse-dev libglib2.0-dev \
-        libgmp3-dev libltdl-dev libmpc-dev libmpfr-dev libncurses5-dev libncursesw5-dev libpython3-dev \
-        libreadline-dev libssl-dev libtool llvm lrzsz libnsl-dev ninja-build p7zip p7zip-full patch pkgconf \
-        python3 python3-pyelftools python3-setuptools qemu-utils rsync scons squashfs-tools subversion \
-        swig texinfo uglifyjs upx-ucl unzip vim wget xmlto xxd xz-utils zlib1g-dev
+        bzip2 ccache cmake cpio curl device-tree-compiler fastjar flex gawk gettext gcc-multilib g++-multilib \
+        git gperf haveged help2man intltool libc6-dev-i386 libelf-dev libglib2.0-dev libgmp3-dev libltdl-dev \
+        libmpc-dev libmpfr-dev libncurses5-dev libncursesw5-dev libreadline-dev libfuse-dev libssl-dev libtool lrzsz \
+        genisoimage msmtp nano ninja-build p7zip p7zip-full patch pkgconf python3 python3-pip libpython3-dev qemu-utils \
+        rsync scons squashfs-tools subversion swig texinfo uglifyjs upx-ucl unzip vim wget xmlto xxd zlib1g-dev
+
 
         sudo -E apt-get -qq autoremove --purge
         sudo -E apt-get -qq clean
         sudo apt install golang -y
+
+        export PATH="/usr/bin:$PATH"
+        python2 -V
+
         sudo timedatectl set-timezone "$TZ"
         sudo mkdir -p /mnt/workdir
-        sudo chown $USER:$GROUPS /mnt/workdir
-        #go version
+        sudo chown $USER:$USER /mnt/workdir
+
         echo "========== CPU信息 =========="
-        lscpu | grep -E "Model name|Core|CPU\(s\)"
+        lscpu | grep -E "Model name|CPU\(s\)"
         echo -e "\n========== 内存信息 =========="
         free -h
         echo -e "\n========== 磁盘信息 =========="
@@ -90,7 +93,7 @@ jobs:
       run: cd openwrt && ./scripts/feeds update -a
 
     - name: Install feeds
-      run: cd openwrt && ./scripts/feeds install -a 
+      run: cd openwrt && ./scripts/feeds install -a
 
     - name: Load custom configuration
       run: |
@@ -119,12 +122,30 @@ jobs:
     - name: Compile the firmware
       id: compile
       run: |
+        export PATH="/usr/bin:$PATH"
         cd openwrt
+
         ./scripts/feeds update -a
         ./scripts/feeds install -a
-        #go version
+
+        echo 'CONFIG_PACKAGE_node=y' >> .config
+        echo 'CONFIG_PACKAGE_luci-app-nginx-ui=y' >> .config
+
+        # 在 make defconfig 这行的前面，插入下面三行
+
+        # =====自定义固件版本(B方案)=====
+        echo 'CONFIG_VERSION_DIST="MY‑ROUTER"' >> .config
+        echo 'CONFIG_VERSION_NUMBER="2026‑10‑Custom"' >> .config
+        echo 'CONFIG_VERSION_HOME_URL=""' >> .config
+        
+        make defconfig
+
+        echo "===== Verify node & nginx‑ui config ====="
+        grep -E "CONFIG_PACKAGE_node|CONFIG_PACKAGE_luci-app-nginx-ui" .config
+
         echo -e "$(nproc) thread compile"
         make -j$(nproc) || make -j1 || make -j1 V=s
+
         echo "::set-output name=status::success"
         grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/' > DEVICE_NAME
         [ -s DEVICE_NAME ] && echo "DEVICE_NAME=_$(cat DEVICE_NAME)" >> $GITHUB_ENV
@@ -168,7 +189,7 @@ jobs:
 
     - name: Upload firmware to WeTransfer
       id: wetransfer
-      if: steps.organize.outputs.status == 'success' && env.UPLOAD_WETRANSFER == 'true' && !cancelled()
+      if: steps.organize.outputs.status == 'true' && env.UPLOAD_WETRANSFER == 'true' && !cancelled()
       run: |
         curl -fsSL git.io/file-transfer | sh
         ./transfer wet -s -p 16 --no-progress ${FIRMWARE} 2>&1 | tee wetransfer.log
