@@ -1,48 +1,48 @@
-name: Build‑LibWrt‑25.12‑NSS
+name: Build-LibWrt-25.12-NSS
 
 on:
   workflow_dispatch:
 
 env:
   REPO_URL: https://github.com/LiBwrt/LibWrt
-  REPO_BRANCH: 25.12‑nss
+  REPO_BRANCH: 25.12-nss
   CONFIG_FILE: 360v6.config
-  DIY_P1_SH: diy‑part1.sh
-  DIY_P2_SH: diy‑part3.sh
+  DIY_P1_SH: diy-part1.sh
+  DIY_P2_SH: diy-part3.sh
 
 jobs:
   build:
-    runs‑on: ubuntu‑22.04
+    runs-on: ubuntu-22.04
     permissions:
       contents: write
 
     steps:
       - name: Increase disk space
-        uses: easimon/maximize‑build‑space@master
+        uses: easimon/maximize-build-space@master
         with:
-          root‑reserve‑mb: 512
-          swap‑size‑mb: 4096
-          remove‑dotnet: 'true'
-          remove‑android: 'true'
-          remove‑haskell: 'true'
+          root-reserve-mb: 512
+          swap-size-mb: 4096
+          remove-dotnet: 'true'
+          remove-android: 'true'
+          remove-haskell: 'true'
 
       - name: Install build dependencies
         run: |
-          sudo apt‑get update -y
-          sudo apt‑get full‑upgrade -y
-          sudo apt‑get install -y ack antlr3 asciidoc autoconf automake autopoint \
-          bzip2 ccache cmake cpio curl device‑tree‑compiler fastjar flex gawk \
-          git gperf haveged help2man intltool libc6‑dev‑i386 libelf‑dev libglib‑dev \
-          libmpc‑dev libmpfr‑dev libncurses5‑dev libncursesw5‑dev libreadline‑dev \
-          genisoimage msmtp nano ninja‑build p7zip p7zip‑full patch pkgconf python3 \
-          rsync scons squashfs‑tools subversion swig texinfo uglifyjs upx‑ucl
+          sudo apt-get update -y
+          sudo apt-get full-upgrade -y
+          sudo apt-get install -y ack antlr3 asciidoc autoconf automake autopoint \
+          bzip2 ccache cmake cpio curl device-tree-compiler fastjar flex gawk \
+          git gperf haveged help2man intltool libc6-dev-i386 libelf-dev libglib-dev \
+          libmpc-dev libmpfr-dev libncurses5-dev libncursesw5-dev libreadline-dev \
+          genisoimage msmtp nano ninja-build p7zip p7zip-full patch pkgconf python3 \
+          rsync scons squashfs-tools subversion swig texinfo uglifyjs upx-ucl
 
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Clone source code
         run: |
-          git clone -b $REPO_BRANCH --depth 1 --single‑branch $REPO_URL libwrt
+          git clone -b $REPO_BRANCH --depth 1 --single-branch $REPO_URL libwrt
           cd libwrt
 
       - name: Run DIY Part1 (before feeds update)
@@ -83,10 +83,10 @@ jobs:
           tar -zcvf firmware.tar.gz -C output .
 
       - name: Create Release
-        uses: softprops/action‑gh‑release@v2
+        uses: softprops/action-gh-release@v2
         with:
-          tag_name: "build‑$(date +%Y%m%d‑%H%M)"
-          name: "Build $(date +'%Y‑%m‑%d %H:%M')"
+          tag_name: "build-$(date +%Y%m%d-%H%M)"
+          name: "Build $(date +'%Y-%m-%d %H:%M')"
           files: firmware.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
