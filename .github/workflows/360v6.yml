@@ -17,19 +17,26 @@ jobs:
       contents: write
 
     steps:
-      - name: Increase disk space
+      - name: Maximize build space
         uses: easimon/maximize-build-space@master
         with:
-          root-reserve-mb: 2048
-          swap-size-mb: 4096
           remove-dotnet: 'true'
           remove-android: 'true'
           remove-haskell: 'true'
-          remove-snap: 'true'
+          remove-codeql: 'true'
+          remove-docker-images: 'true'
+          root-reserve-mb: 2048
+          swap-size-mb: 4096
 
-      - name: Install build dependencies
+      - name: Manually delete snap and apt cache
         run: |
           sudo apt-get clean
+          sudo rm -rf /snap/*
+          sudo rm -rf /var/lib/apt/lists/*
+          sudo rm -rf ~/.cache
+
+      - name: Apt install dependencies
+        run: |
           sudo apt-get update -y
           sudo apt-get install -y ack antlr3 asciidoc autoconf automake autopoint \
           bzip2 ccache cmake cpio curl device-tree-compiler fastjar flex gawk \
@@ -44,7 +51,6 @@ jobs:
       - name: Clone source code
         run: |
           git clone -b $REPO_BRANCH --depth 1 --single-branch $REPO_URL libwrt
-          cd libwrt
 
       - name: Run DIY Part1 (before feeds update)
         run: |
@@ -57,27 +63,27 @@ jobs:
           cd libwrt
           ./scripts/feeds update -a && ./scripts/feeds install -a
 
-      - name: Load config file
+      - name: Load .config
         run: |
           cp $CONFIG_FILE libwrt/.config
 
-      - name: Download packages
+      - name: Make download
         run: |
           cd libwrt
           make download -j$(nproc)
 
-      - name: Start compiling
+      - name: Compile firmware
         run: |
           cd libwrt
           make -j$(nproc) V=s
 
-      - name: Package firmware
+      - name: Prepare artifact
         run: |
           mkdir -p output
           cp -r libwrt/bin/targets/* output/
           tar -zcvf firmware.tar.gz -C output .
 
-      - name: Create Release
+      - name: Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: "build-$(date +%Y%m%d-%H%M)"
