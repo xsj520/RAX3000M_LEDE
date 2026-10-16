@@ -20,7 +20,7 @@ jobs:
       - name: Increase disk space
         uses: easimon/maximize-build-space@master
         with:
-          root-reserve-mb: 1024
+          root-reserve-mb: 2048
           swap-size-mb: 4096
           remove-dotnet: 'true'
           remove-android: 'true'
@@ -29,8 +29,8 @@ jobs:
 
       - name: Install build dependencies
         run: |
+          sudo apt-get clean
           sudo apt-get update -y
-          sudo apt-get full-upgrade -y
           sudo apt-get install -y ack antlr3 asciidoc autoconf automake autopoint \
           bzip2 ccache cmake cpio curl device-tree-compiler fastjar flex gawk \
           git gperf haveged help2man intltool libc6-dev-i386 libelf-dev libglib-dev \
@@ -56,12 +56,6 @@ jobs:
         run: |
           cd libwrt
           ./scripts/feeds update -a && ./scripts/feeds install -a
-
-      - name: Run DIY Part2 (after feeds install)
-        run: |
-          cd libwrt
-          chmod +x ../$DIY_P2_SH
-          ../$DIY_P2_SH
 
       - name: Load config file
         run: |
