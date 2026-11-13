@@ -24,7 +24,7 @@ date_version=$(date +"%y.%m.%d")
 sed -i 's/"网络存储"/"存储"/g' `grep "网络存储" -rl ./`
 sed -i 's/"iStore"/"商店"/g' `grep "iStore" -rl ./`
 sed -i 's/"Docker"/"容器"/g' `grep "Docker" -rl ./`
-sed -i 's/"Turbo ACC 网络加速设置"/"网络加速"/g' `grep "Turbo ACC 网络加速设置" -rl ./`
+sed -i 's/"Turbo ACC 网络加速"/"网络加速"/g' `grep "Turbo ACC 网络加速" -rl ./`
 sed -i 's/"上网时间控制"/"上网控制"/g' `grep "上网时间控制" -rl ./`
 sed -i 's/"启动项"/"启动项目"/g' `grep "启动项" -rl ./`
 sed -i 's/"挂载点"/"挂载地点"/g' `grep "挂载点" -rl ./`
