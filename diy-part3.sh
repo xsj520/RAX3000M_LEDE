@@ -43,8 +43,8 @@ sed -i 's/"路由"/"路由设置"/g' `grep "路由" -rl ./`
 sed -i 's/"终端"/"终端命令"/g' `grep "终端" -rl ./`
 sed -i 's/"QoS"/"网络限速"/g' `grep "QoS" -rl ./`
 sed -i 's/"Watchcat"/"断网重启"/g' `grep "Watchcat" -rl ./`
-sed -i 's/"Control"/"限速"/g' `grep "Control" -rl ./`
-sed -i 's/"SQM 队列管理"/"网络限速"/g' `grep "SQM 队列管理" -rl ./`
+
+sed -i 's/"SQM 队列管理"/"网速限速"/g' `grep "SQM 队列管理" -rl ./`
 # sed -i 's/"UPnP"/"即插即用"/g' `grep "UPnP" -rl ./`
 
 sed -i 's/"FileBrowser"/"文件管理"/g' `grep "FileBrowser" -rl ./`
