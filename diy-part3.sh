@@ -44,7 +44,7 @@ sed -i 's/"QoS"/"网络限速"/g' `grep "QoS" -rl ./`
 sed -i 's/"Watchcat"/"断网重启"/g' `grep "Watchcat" -rl ./`
 
 sed -i 's/"SQM 队列管理"/"网速限速"/g' `grep "SQM 队列管理" -rl ./`
-# sed -i 's/"UPnP"/"即插即用"/g' `grep "UPnP" -rl ./`
+sed -i 's/"交换机"/"端口设置"/g' `grep "交换机" -rl ./`
 
 sed -i 's/"FileBrowser"/"文件管理"/g' `grep "FileBrowser" -rl ./`
 
