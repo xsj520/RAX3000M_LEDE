@@ -19,8 +19,8 @@ fi
 
 if [ -n "$MINIUPNPD_SRC" ]; then
     cd "$MINIUPNPD_SRC"
-    # 改成注释方式，稳定性远高于区间删除
-    sed -i '/if (is_reserved_ip(extaddr)) {/,/return -1;/s/^/\/\//' miniupnpd.c
+    # 区间匹配，在行首添加 // 注释，用 | 分隔符，规避转义问题
+    sed -i '/if (is_reserved_ip(extaddr)) {/,/return -1;/s|^|//|' miniupnpd.c
     cd -
     echo "✅ miniupnpd补丁已打入"
     # 清理包，强制重新编译
@@ -28,6 +28,7 @@ if [ -n "$MINIUPNPD_SRC" ]; then
 else
     echo "❌ 找不到miniupnpd源码文件夹"
 fi
+
 
 
 # Modify default IP
