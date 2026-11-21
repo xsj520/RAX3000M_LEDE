@@ -7,17 +7,28 @@
 #
 # https://github.com/P3TERX/Actions-OpenWrt
 
-# Description: OpenWrt DIY script part 2 (After Update feeds)
-# ====================== 绕过 miniupnpd CGNAT私网IP检测补丁 ======================
-# 作用：删掉is_reserved_ip判断，100.64/10 CGNAT也能正常创建UPnP转发，和老固件行为一致
+./scripts/feeds update -a && ./scripts/feeds install -a
+
+# 查找miniupnpd源码位置，自动适配路径
+MINIUPNPD_SRC=""
 if [ -d "feeds/packages/net/miniupnpd/src" ]; then
-    cd feeds/packages/net/miniupnpd/src
-    sed -i '/if (is_reserved_ip(extaddr))/,/return -1;/d' miniupnpd.c
-    cd -
-    echo "✅ miniupnpd 补丁已应用，跳过私网IP校验"
-else
-    echo "⚠️ 未找到miniupnpd源码目录，跳过补丁"
+    MINIUPNPD_SRC="feeds/packages/net/miniupnpd/src"
+elif [ -d "package/miniupnpd/src" ]; then
+    MINIUPNPD_SRC="package/miniupnpd/src"
 fi
+
+if [ -n "$MINIUPNPD_SRC" ]; then
+    cd "$MINIUPNPD_SRC"
+    # 按日志字符串匹配删除，兼容性更强
+    sed -i '/Reserved \/ private IP address/,/return -1;/d' miniupnpd.c
+    cd -
+    echo "✅ miniupnpd补丁已打入"
+    # 清理缓存强制重编
+    make clean package/miniupnpd/clean
+else
+    echo "❌ 找不到miniupnpd源码文件夹"
+fi
+
 
 # Modify default IP
 sed -i 's/192.168.1.1/192.168.1.2/g' package/base-files/files/bin/config_generate
