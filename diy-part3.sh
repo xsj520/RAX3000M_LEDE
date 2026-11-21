@@ -19,16 +19,15 @@ fi
 
 if [ -n "$MINIUPNPD_SRC" ]; then
     cd "$MINIUPNPD_SRC"
-    # 按日志字符串匹配删除，兼容性更强
-    sed -i '/Reserved \/ private IP address/,/return -1;/d' miniupnpd.c
+    # 改成注释方式，稳定性远高于区间删除
+    sed -i '/if (is_reserved_ip(extaddr)) {/,/return -1;/s/^/\/\//' miniupnpd.c
     cd -
     echo "✅ miniupnpd补丁已打入"
-    # 【修正】分开清理缓存，强制重新编译miniupnpd
+    # 清理包，强制重新编译
     make package/miniupnpd/clean
 else
     echo "❌ 找不到miniupnpd源码文件夹"
 fi
-
 
 
 # Modify default IP
