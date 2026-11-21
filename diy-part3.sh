@@ -1,5 +1,5 @@
 #!/bin/bash
-export USE_CCACHE=0
+#
 # Copyright (c) 2019-2020 P3TERX <https://p3terx.com>
 #
 # This is free software, licensed under the MIT License.
@@ -9,27 +9,10 @@ export USE_CCACHE=0
 
 ./scripts/feeds update -a && ./scripts/feeds install -a
 
-# 查找miniupnpd源码位置，自动适配路径
-MINIUPNPD_SRC=""
-if [ -d "feeds/packages/net/miniupnpd/src" ]; then
-    MINIUPNPD_SRC="feeds/packages/net/miniupnpd/src"
-elif [ -d "package/miniupnpd/src" ]; then
-    MINIUPNPD_SRC="package/miniupnpd/src"
-fi
-
-if [ -n "$MINIUPNPD_SRC" ]; then
-    cd "$MINIUPNPD_SRC"
-    # 区间匹配，在行首添加 // 注释，用 | 分隔符，规避转义问题
-    sed -i '/if (is_reserved_ip(extaddr)) {/,/return -1;/s|^|//|' miniupnpd.c
-    cd -
-    echo "✅ miniupnpd补丁已打入"
-    # 清理包，强制重新编译
-    make package/miniupnpd/clean
-else
-    echo "❌ 找不到miniupnpd源码文件夹"
-fi
-
-
+# 替换 miniupnpd 为 2.1 版本（无CGNAT私网IP校验）
+rm -rf feeds/packages/net/miniupnpd
+git clone https://github.com/miniupnp/miniupnp.git -b miniupnpd_2_1 feeds/packages/net/miniupnpd
+echo "✅ 已替换为 miniupnpd 2.1，不需要CGNAT补丁"
 
 # Modify default IP
 sed -i 's/192.168.1.1/192.168.1.2/g' package/base-files/files/bin/config_generate
