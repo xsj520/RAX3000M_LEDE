@@ -7,13 +7,6 @@
 #
 # https://github.com/P3TERX/Actions-OpenWrt
 
-./scripts/feeds update -a && ./scripts/feeds install -a
-
-# 替换 miniupnpd 为 2.1 版本（无CGNAT私网IP校验）
-rm -rf feeds/packages/net/miniupnpd
-git clone https://github.com/miniupnp/miniupnp.git -b miniupnpd_2_1 feeds/packages/net/miniupnpd
-echo "✅ 已替换为 miniupnpd 2.1，不需要CGNAT补丁"
-
 # Modify default IP
 sed -i 's/192.168.1.1/192.168.1.2/g' package/base-files/files/bin/config_generate
 
