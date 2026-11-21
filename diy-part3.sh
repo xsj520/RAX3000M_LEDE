@@ -23,11 +23,12 @@ if [ -n "$MINIUPNPD_SRC" ]; then
     sed -i '/Reserved \/ private IP address/,/return -1;/d' miniupnpd.c
     cd -
     echo "✅ miniupnpd补丁已打入"
-    # 清理缓存强制重编
-    make clean package/miniupnpd/clean
+    # 【修正】分开清理缓存，强制重新编译miniupnpd
+    make package/miniupnpd/clean
 else
     echo "❌ 找不到miniupnpd源码文件夹"
 fi
+
 
 
 # Modify default IP
