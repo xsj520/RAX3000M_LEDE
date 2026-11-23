@@ -45,7 +45,7 @@ sed -i 's/"SQM 队列管理"/"网速限速"/g' `grep "SQM 队列管理" -rl ./`
 sed -i 's/"交换机"/"端口设置"/g' `grep "交换机" -rl ./`
 
 sed -i 's/"FileBrowser"/"文件管理"/g' `grep "FileBrowser" -rl ./`
-
+sed -i 's/"Docker Manager"/"DOCKER"/g' `grep "Docker Manager" -rl ./`
 sed -i 's/"DHCP"/"地址分配"/g' `grep "DHCP" -rl ./`
 sed -i 's/"DNS"/"DNS设置"/g' `grep "DNS" -rl ./`
 sed -i 's/"UPnP IGD 和 PCP"/"端口映射"/g' `grep "UPnP IGD 和 PCP" -rl ./`
