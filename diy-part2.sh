@@ -62,6 +62,7 @@ else
 echo "ℹ️ cjson不存在，跳过"
 fi
 
+sed -i '/PKG_HASH:=/d' feeds/luci/contrib/package/lucihttp/Makefile
 
 
 
