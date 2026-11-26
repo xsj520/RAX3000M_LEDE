@@ -54,14 +54,6 @@ sed -i 's/"备份与更新"/"备份升级"/g' `grep "备份与更新" -rl ./`
 sed -i 's/"进程"/"进程信息"/g' `grep "进程" -rl ./`
 sed -i 's/"DDNSTO 远程控制"/"DDNSTO"/g' `grep "DDNSTO 远程控制" -rl ./`
 
-# 过滤掉null空端口卡片 + eth0
-if [ -f "feeds/luci/modules/luci-mod-status/htdocs/luci-static/resources/view/status/15_ports.js" ]; then
-sed -i 's/return dev.name !== "eth0";/return dev.name \&\& dev.name !== "eth0";/g' feeds/luci/modules/luci-mod-status/htdocs/luci-static/resources/view/status/15_ports.js
-echo "✅ 已修复：屏蔽eth0 + 屏蔽null空端口"
-else
-echo "ℹ️ 15_ports.js 不存在，跳过"
-fi
-
 
 # ./scripts/feeds update -a
 # ./scripts/feeds install -a
