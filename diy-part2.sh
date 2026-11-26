@@ -62,7 +62,13 @@ else
 echo "ℹ️ cjson不存在，跳过"
 fi
 
-sed -i '/PKG_HASH:=/d' feeds/luci/contrib/package/lucihttp/Makefile
+# 临时移除 lucihttp 的哈希校验，解决hash mismatch报错
+if [ -f "feeds/luci/contrib/package/lucihttp/Makefile" ]; then
+    sed -i '/PKG_HASH:=/d' feeds/luci/contrib/package/lucihttp/Makefile
+    echo "✅ 已删除 lucihttp 的 PKG_HASH 校验行"
+else
+    echo "ℹ️ 找不到 lucihttp Makefile，跳过"
+fi
 
 
 
