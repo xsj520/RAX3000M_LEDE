@@ -16,7 +16,7 @@ on:
         default: 'false'
 
 env:
-  REPO_URL: https://github.com/xsj520/fanchmwrt
+  REPO_URL: https://github.com/fanchmwrt/fanchmwrt
   REPO_BRANCH: fanchmwrt-25.12.6
   FEEDS_CONF: feeds.conf.default
   CONFIG_FILE: 360v6.config
