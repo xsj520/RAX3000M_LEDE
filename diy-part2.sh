@@ -54,12 +54,14 @@ sed -i 's/"备份与更新"/"备份升级"/g' `grep "备份与更新" -rl ./`
 sed -i 's/"进程"/"进程信息"/g' `grep "进程" -rl ./`
 sed -i 's/"DDNSTO 远程控制"/"DDNSTO"/g' `grep "DDNSTO 远程控制" -rl ./`
 
+# 自动给cjson增加cmake4兼容参数
 if [ -f "feeds/packages/libs/cjson/Makefile" ]; then
-    sed -i 's/CMAKE_OPTIONS += -DENABLE_CJSON_TEST=OFF/CMAKE_OPTIONS += -DENABLE_CJSON_TEST=OFF -DCMAKE_POLICY_VERSION_MINIMUM=3.5/g' feeds/packages/libs/cjson/Makefile
-    echo "✅ cjson CMAKE_OPTIONS 补丁写入成功"
+sed -i 's/CMAKE_OPTIONS += -DENABLE_CJSON_TEST=OFF/CMAKE_OPTIONS += -DENABLE_CJSON_TEST=OFF -DCMAKE_POLICY_VERSION_MINIMUM=3.5/g' feeds/packages/libs/cjson/Makefile
+echo "✅ cjson补丁执行完成"
 else
-    echo "ℹ️ 未找到cjson Makefile，跳过"
+echo "ℹ️ cjson不存在，跳过"
 fi
+
 
 
 
