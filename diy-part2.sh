@@ -54,12 +54,6 @@ sed -i 's/"备份与更新"/"备份升级"/g' `grep "备份与更新" -rl ./`
 sed -i 's/"进程"/"进程信息"/g' `grep "进程" -rl ./`
 sed -i 's/"DDNSTO 远程控制"/"DDNSTO"/g' `grep "DDNSTO 远程控制" -rl ./`
 
-PORTS_JS="feeds/luci/modules/luci-mod-status/htdocs/luci-static/resources/view/status/include/15_ports.js"
-if [ -f "$PORTS_JS" ];then
-    sed -i '/known_ports.map(function(port) {/a\	if (port.device === "eth0")\n		return null;' "$PORTS_JS"
-    echo "✅ 补丁完成，首页将隐藏eth0端口卡片"
-fi
-
 # 修复cjson cmake4兼容问题
 sed -i 's/cmake_minimum_required(VERSION 2.8)/cmake_minimum_required(VERSION 3.5)/g' feeds/packages/libs/cjson/src/CMakeLists.txt
 
